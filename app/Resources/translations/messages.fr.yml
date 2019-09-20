@@ -1,0 +1,9 @@
+user:
+    profile:
+        title: Votre profil
+        edit: Editer votre profil
+    create:
+        title: Créer un utilisateur
+        success: L'utilisateur a bien été créé
+    update:
+        success: L'utilisateur a bien été modifié
