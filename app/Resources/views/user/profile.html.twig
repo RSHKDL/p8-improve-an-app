@@ -7,7 +7,20 @@
         <ul>
             <li>{{ user.username }}</li>
             <li>{{ user.email }}</li>
+            <li>{{ 'user.profile.tasks.count'|trans }} : {{ user.tasks.count }}</li>
         </ul>
         <a href="{{ path('user_edit', {'id': user.id}) }}" class="btn btn-success">{{ 'user.profile.edit'|trans }}</a>
+    </div>
+    <div class="row">
+        <h2>{{ 'user.profile.tasks.title'|trans }}</h2>
+        {% if user.tasks %}
+        <ul>
+            {% for task in user.tasks %}
+                <li>{{ task.title }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>{{ 'user.profile.tasks.empty'|trans }}</p>
+        {% endif %}
     </div>
 {% endblock %}

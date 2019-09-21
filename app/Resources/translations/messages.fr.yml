@@ -7,6 +7,10 @@ user:
     profile:
         title: Votre profil
         edit: Editer votre profil
+        tasks:
+            title: Vos tâches
+            count: Nombre de tâches
+            empty: Vous n'avez pas de tâches.
     create:
         title: Créer un utilisateur
         success: L'utilisateur a bien été créé !
