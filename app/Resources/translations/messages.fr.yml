@@ -12,6 +12,10 @@ task:
     create:
         title: Créér une tâche
         success: La tâche a été bien été ajoutée !
+    update:
+        success: La tâche a bien été modifiée.
+    delete:
+        success: La tâche a bien été supprimée.
     done:
         title: Marquer comme faite
         success: La tâche %s a bien été marquée comme faite.
