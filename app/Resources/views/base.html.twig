@@ -33,15 +33,18 @@
                     <img src="{{ asset('img/Logo_OpenClassrooms.png') }}" alt="OpenClassrooms" />
                     <span>
                         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                            <span>Welcome {{ app.user.username }}</span>
-                            <a href="{{ path('logout') }}" class="pull-right btn btn-danger">logout</a>
+                            <span>
+                                {{ 'home.welcome.default'|trans }}
+                                <a href="{{ path('user_profile') }}">{{ app.user.username }}</a>
+                            </span>
+                            <a href="{{ path('logout') }}" class="btn btn-danger">{{ 'button.logout'|trans }}</a>
                         {% else %}
-                            <span>Welcome anonymous</span>
-                            <a href="{{ path('register') }}" class="btn btn-primary">register</a>
+                            <span>{{ 'home.welcome.anonymous'|trans }}</span>
+                            <a href="{{ path('register') }}" class="btn btn-primary">{{ 'button.register'|trans }}</a>
                         {% endif %}
 
                         {% if not app.user and 'login' != app.request.attributes.get('_route') %}
-                            <a href="{{ path('login') }}" class="btn btn-success">login</a>
+                            <a href="{{ path('login') }}" class="btn btn-success">{{ 'button.login'|trans }}</a>
                         {% endif %}
                     </span>
                 </div>

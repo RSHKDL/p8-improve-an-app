@@ -1,3 +1,8 @@
+home:
+    welcome:
+        default: Bienvenue
+        anonymous: Bienvenue, anonyme !
+
 user:
     profile:
         title: Votre profil
@@ -30,3 +35,6 @@ task:
 button:
     validate: Valider
     delete: Supprimer
+    login: Se connecter
+    logout: Se déconnecter
+    register: S'inscrire

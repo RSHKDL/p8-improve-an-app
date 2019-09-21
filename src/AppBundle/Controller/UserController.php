@@ -45,7 +45,7 @@ class UserController extends Controller
      */
     public function editAction(User $user, Request $request)
     {
-        $this->denyAccessUnlessGranted(User::ROLE_USER);
+        $this->denyAccessUnlessGranted('edit', $user);
         $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
