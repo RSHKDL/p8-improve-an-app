@@ -4,6 +4,21 @@ user:
         edit: Editer votre profil
     create:
         title: Créer un utilisateur
-        success: L'utilisateur a bien été créé
+        success: L'utilisateur a bien été créé !
     update:
-        success: L'utilisateur a bien été modifié
+        success: L'utilisateur a bien été modifié !
+
+task:
+    create:
+        title: Créér une tâche
+        success: La tâche a été bien été ajoutée !
+    done: Marquer comme faite
+    undone: Marquer non terminée
+    empty: Il n'y a pas encore de tâche enregistrée.
+    author:
+        created: Créée par
+        anonymous: Anonyme
+
+button:
+    validate: Valider
+    delete: Supprimer
