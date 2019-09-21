@@ -19,7 +19,7 @@
                 <div>
                     <form action="{{ path('task_toggle', {'id' : task.id }) }}">
                         <button class="btn btn-success btn-sm pull-right">
-                            {% if not task.isDone %}{{ 'task.done'|trans }}{% else %}{{ 'task.undone'|trans }}{% endif %}
+                            {% if not task.isDone %}{{ 'task.done.title'|trans }}{% else %}{{ 'task.undone.title'|trans }}{% endif %}
                         </button>
                     </form>
                     <form action="{{ path('task_delete', {'id' : task.id }) }}">

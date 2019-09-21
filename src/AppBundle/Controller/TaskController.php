@@ -10,9 +10,24 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class TaskController extends Controller
 {
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    /**
+     * TaskController constructor.
+     * @param TranslatorInterface $translator
+     */
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     /**
      * @Route("/tasks", name="task_list")
      */
@@ -43,7 +58,7 @@ class TaskController extends Controller
             $em->persist($task);
             $em->flush();
 
-            $this->addFlash('success', $this->get('translator')->trans('task.create.success'));
+            $this->addFlash('success', $this->translator->trans('task.create.success'));
 
             return $this->redirectToRoute('task_list');
         }
@@ -76,13 +91,20 @@ class TaskController extends Controller
 
     /**
      * @Route("/tasks/{id}/toggle", name="task_toggle")
+     * @param Task $task
+     * @return RedirectResponse
      */
     public function toggleTaskAction(Task $task)
     {
         $task->toggle(!$task->isDone());
         $this->getDoctrine()->getManager()->flush();
 
-        $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
+        $message = 'task.done.success';
+        if (!$task->isDone()) {
+            $message = 'task.undone.success';
+        }
+
+        $this->addFlash('success', $this->translator->trans($message, ['%s' => $task->getTitle()]));
 
         return $this->redirectToRoute('task_list');
     }

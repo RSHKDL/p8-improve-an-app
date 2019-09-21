@@ -12,8 +12,12 @@ task:
     create:
         title: Créér une tâche
         success: La tâche a été bien été ajoutée !
-    done: Marquer comme faite
-    undone: Marquer non terminée
+    done:
+        title: Marquer comme faite
+        success: La tâche %s a bien été marquée comme faite.
+    undone:
+        title: Marquer non terminée
+        success: La tâche %s a bien été marquée comme non terminée.
     empty: Il n'y a pas encore de tâche enregistrée.
     author:
         created: Créée par
