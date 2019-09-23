@@ -49,7 +49,7 @@ class AppCreateAdminCommand extends ContainerAwareCommand
         $admin->setUsername($username);
         $admin->setEmail($email);
         $admin->setPassword($passwordEncoder->encodePassword($admin, $password));
-        $admin->addRole(User::ROLE_ADMIN);
+        $admin->setRoles([User::ROLE_ADMIN]);
 
         /** @var EntityManagerInterface $em */
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');

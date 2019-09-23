@@ -124,14 +124,6 @@ class User implements UserInterface
         return in_array(self::ROLE_ADMIN, $this->getRoles(), true);
     }
 
-    /**
-     * @param string $role
-     */
-    public function addRole($role)
-    {
-        $this->roles[] = $role;
-    }
-
     public function eraseCredentials()
     {
     }

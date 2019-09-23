@@ -45,7 +45,7 @@ class SecurityController extends Controller
             $em = $this->getDoctrine()->getManager();
             $password = $this->get('security.password_encoder')->encodePassword($user, $user->getPassword());
             $user->setPassword($password);
-            $user->addRole(User::ROLE_USER);
+            $user->setRoles([User::ROLE_USER]);
 
             $em->persist($user);
             $em->flush();
