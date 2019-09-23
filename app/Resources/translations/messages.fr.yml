@@ -44,6 +44,10 @@ button:
     register: S'inscrire
     dashboard: Dashboard
     
+flash:
+    success: Superbe !
+    error: Oops !
+
 form:
     user:
         username: Nom d'utilisateur
