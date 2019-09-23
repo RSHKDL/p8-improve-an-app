@@ -9,9 +9,24 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class UserController extends Controller
 {
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    /**
+     * UserController constructor.
+     * @param TranslatorInterface $translator
+     */
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     /**
      * @Route("/users", name="user_list")
      */
@@ -46,8 +61,9 @@ class UserController extends Controller
     public function editAction(User $user, Request $request)
     {
         $this->denyAccessUnlessGranted('edit', $user);
-        $form = $this->createForm(UserType::class, $user);
-
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
+        $form = $this->createForm(UserType::class, $user, ['isFromAdmin' => $currentUser->isAdmin()]);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
@@ -56,7 +72,7 @@ class UserController extends Controller
 
             $this->getDoctrine()->getManager()->flush();
 
-            $this->addFlash('success', $this->get('translator')->trans('user.update.success'));
+            $this->addFlash('success', $this->translator->trans('user.update.success'));
 
             return in_array(User::ROLE_ADMIN, $user->getRoles(), true) ? $this->redirectToRoute('user_list') : $this->redirectToRoute('user_profile');
         }

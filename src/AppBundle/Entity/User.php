@@ -109,6 +109,22 @@ class User implements UserInterface
     }
 
     /**
+     * @param array $roles
+     */
+    public function setRoles(array $roles)
+    {
+        $this->roles = $roles;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        return in_array(self::ROLE_ADMIN, $this->getRoles(), true);
+    }
+
+    /**
      * @param string $role
      */
     public function addRole($role)

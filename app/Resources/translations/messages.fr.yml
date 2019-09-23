@@ -42,3 +42,15 @@ button:
     login: Se connecter
     logout: Se déconnecter
     register: S'inscrire
+    dashboard: Dashboard
+    
+form:
+    user:
+        username: Nom d'utilisateur
+        password: Votre mot de passe
+        password_repeat: Taper à nouveau votre mot de passe
+        password_missmatch: Les deux mots de passe doivent correspondre
+        email: Votre courriel
+        role: Rôle de l'utilisateur
+        role_admin: Administrateur
+        role_user: Utilisateur

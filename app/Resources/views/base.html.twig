@@ -38,6 +38,9 @@
                                 <a href="{{ path('user_profile') }}">{{ app.user.username }}</a>
                             </span>
                             <a href="{{ path('logout') }}" class="btn btn-danger">{{ 'button.logout'|trans }}</a>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <a href="{{ path('user_list') }}" class="btn btn-primary">{{ 'button.dashboard'|trans }}</a>
+                            {% endif %}
                         {% else %}
                             <span>{{ 'home.welcome.anonymous'|trans }}</span>
                             <a href="{{ path('register') }}" class="btn btn-primary">{{ 'button.register'|trans }}</a>
