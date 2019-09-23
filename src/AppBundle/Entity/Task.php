@@ -8,6 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity
  * @ORM\Table
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\TaskRepository")
  */
 class Task
 {
@@ -45,6 +46,10 @@ class Task
      */
     private $author;
 
+    /**
+     * Task constructor.
+     * @throws \Exception
+     */
     public function __construct()
     {
         $this->createdAt = new \Datetime();
