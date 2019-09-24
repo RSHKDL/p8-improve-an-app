@@ -37,7 +37,7 @@ class SecurityController extends Controller
     public function register(Request $request)
     {
         $user = new User();
-        $form = $this->createForm(UserType::class, $user);
+        $form = $this->createForm(UserType::class, $user, ['isFromAdmin' => false]);
 
         $form->handleRequest($request);
 
