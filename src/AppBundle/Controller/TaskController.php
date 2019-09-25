@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Task;
 use AppBundle\Entity\User;
 use AppBundle\Form\TaskType;
+use AppBundle\Handler\TaskHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -20,12 +21,21 @@ class TaskController extends Controller
     private $translator;
 
     /**
+     * @var TaskHandler
+     */
+    private $taskHandler;
+
+    /**
      * TaskController constructor.
      * @param TranslatorInterface $translator
+     * @param TaskHandler $taskHandler
      */
-    public function __construct(TranslatorInterface $translator)
-    {
+    public function __construct(
+        TranslatorInterface $translator,
+        TaskHandler $taskHandler
+    ) {
         $this->translator = $translator;
+        $this->taskHandler = $taskHandler;
     }
 
     /**
@@ -40,24 +50,18 @@ class TaskController extends Controller
      * @Route("/tasks/create", name="task_create")
      * @param Request $request
      * @return RedirectResponse|Response
+     * @throws \Exception
      */
     public function createAction(Request $request)
     {
-        $task = new Task();
-        $form = $this->createForm(TaskType::class, $task);
-
+        $form = $this->createForm(TaskType::class);
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-
+        if ($form->isSubmitted() && $form->isValid()) {
             /** @var User $user */
             $user = $this->getUser();
-            $task->setAuthor($user);
 
-            $em->persist($task);
-            $em->flush();
-
+            $this->taskHandler->create($form->getData(), $user);
             $this->addFlash('success', $this->translator->trans('task.create.success'));
 
             return $this->redirectToRoute('task_list');
