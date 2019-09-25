@@ -15,6 +15,7 @@ final class UserVoter extends Voter
 {
     const CAN_VIEW = 'view';
     const CAN_EDIT = 'edit';
+    const CAN_DELETE = 'delete';
 
     /**
      * @param string $attribute
@@ -23,7 +24,7 @@ final class UserVoter extends Voter
      */
     protected function supports($attribute, $subject)
     {
-        return in_array($attribute, [self::CAN_VIEW, self::CAN_EDIT], true)
+        return in_array($attribute, [self::CAN_VIEW, self::CAN_EDIT, self::CAN_DELETE], true)
             && $subject instanceof User;
     }
 
@@ -51,6 +52,9 @@ final class UserVoter extends Voter
             case self::CAN_VIEW:
                 return $this->canView($currentUser, $user);
                 break;
+            case self::CAN_DELETE:
+                return $this->canDelete($currentUser);
+                break;
         }
 
         return false;
@@ -74,5 +78,14 @@ final class UserVoter extends Voter
     private function canView(User $currentUser, User $user)
     {
         return $this->canEdit($currentUser, $user);
+    }
+
+    /**
+     * @param User $currentUser
+     * @return bool
+     */
+    private function canDelete(User $currentUser)
+    {
+        return in_array(User::ROLE_ADMIN, $currentUser->getRoles(), true);
     }
 }

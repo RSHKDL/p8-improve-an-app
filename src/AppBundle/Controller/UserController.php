@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
 use AppBundle\Form\UserType;
+use AppBundle\Handler\UserHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -19,12 +20,21 @@ class UserController extends Controller
     private $translator;
 
     /**
+     * @var UserHandler
+     */
+    private $userHandler;
+
+    /**
      * UserController constructor.
      * @param TranslatorInterface $translator
+     * @param UserHandler $userHandler
      */
-    public function __construct(TranslatorInterface $translator)
-    {
+    public function __construct(
+        TranslatorInterface $translator,
+        UserHandler $userHandler
+    ) {
         $this->translator = $translator;
+        $this->userHandler = $userHandler;
     }
 
     /**
@@ -33,10 +43,12 @@ class UserController extends Controller
     public function listAction()
     {
         $this->denyAccessUnlessGranted(User::ROLE_ADMIN);
+        $nonAdminUsers = $this->getDoctrine()->getRepository('AppBundle:User')->findAllNonAdmin();
 
         return $this->render('user/list.html.twig',
             [
-                'users' => $this->getDoctrine()->getRepository('AppBundle:User')->findAll()
+                'users' => $this->getDoctrine()->getRepository('AppBundle:User')->findAll(),
+                'hasOnlyAdmin' => empty($nonAdminUsers) ? true : false
             ]
         );
     }
@@ -53,6 +65,32 @@ class UserController extends Controller
     }
 
     /**
+     * @Route("/users/create", name="user_create")
+     * @param Request $request
+     * @return RedirectResponse|Response
+     */
+    public function createAction(Request $request)
+    {
+        $this->denyAccessUnlessGranted(User::ROLE_ADMIN);
+        $form = $this->createForm(UserType::class, [], [
+            'isFromAdmin' => true,
+            'isNewUser' => true
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $this->userHandler->create($form->getData());
+            $this->addFlash(
+                'success',
+                $this->translator->trans('user.create.success', ['%name' => $user->getUsername()]));
+
+            return $this->redirectToRoute('user_list');
+        }
+
+        return $this->render('user/create.html.twig', ['form' => $form->createView()]);
+    }
+
+    /**
      * @Route("/users/{id}/edit", name="user_edit")
      * @param User $user
      * @param Request $request
@@ -63,7 +101,10 @@ class UserController extends Controller
         $this->denyAccessUnlessGranted('edit', $user);
         /** @var User $currentUser */
         $currentUser = $this->getUser();
-        $form = $this->createForm(UserType::class, $user, ['isFromAdmin' => $currentUser->isAdmin()]);
+        $form = $this->createForm(UserType::class, $user, [
+            'isFromAdmin' => $currentUser->isAdmin(),
+            'isNewUser' => false
+        ]);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
@@ -78,5 +119,23 @@ class UserController extends Controller
         }
 
         return $this->render('user/edit.html.twig', ['form' => $form->createView(), 'user' => $user]);
+    }
+
+    /**
+     * @Route("/users/{id}/delete", name="user_delete")
+     * @param User $user
+     * @return RedirectResponse
+     */
+    public function deleteAction(User $user)
+    {
+        $currentUser = $this->getUser();
+        $this->denyAccessUnlessGranted('delete', $currentUser);
+
+        $this->getDoctrine()->getManager()->remove($user);
+        $this->getDoctrine()->getManager()->flush();
+
+        $this->addFlash('success', $this->translator->trans('user.delete.success'));
+
+        return $this->redirectToRoute('user_list');
     }
 }

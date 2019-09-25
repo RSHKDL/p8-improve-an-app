@@ -4,14 +4,39 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
 use AppBundle\Form\UserType;
+use AppBundle\Handler\UserHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class SecurityController extends Controller
 {
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    /**
+     * @var UserHandler
+     */
+    private $userHandler;
+
+    /**
+     * SecurityController constructor.
+     * @param TranslatorInterface $translator
+     * @param UserHandler $userHandler
+     */
+    public function __construct(
+        TranslatorInterface $translator,
+        UserHandler $userHandler
+    ) {
+        $this->translator = $translator;
+        $this->userHandler = $userHandler;
+    }
+
     /**
      * @Route("/login", name="login")
      * @return Response
@@ -36,26 +61,25 @@ class SecurityController extends Controller
      */
     public function register(Request $request)
     {
-        $user = new User();
-        $form = $this->createForm(UserType::class, $user, ['isFromAdmin' => false]);
+        $form = $this->createForm(UserType::class, [], [
+            'isFromAdmin' => false,
+            'isNewUser' => true
+        ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $password = $this->get('security.password_encoder')->encodePassword($user, $user->getPassword());
-            $user->setPassword($password);
-            $user->setRoles([User::ROLE_USER]);
+            $user = $this->userHandler->create($form->getData());
 
-            $em->persist($user);
-            $em->flush();
-
-            $this->addFlash('success', $this->get('translator')->trans('user.create.success'));
+            $this->addFlash(
+                'success',
+                $this->translator->trans('user.create.success', ['%name' => $user->getUsername()])
+            );
 
             return $this->redirectToRoute('task_list');
         }
 
-        return $this->render('user/create.html.twig', ['form' => $form->createView()]);
+        return $this->render('security/register.html.twig', ['form' => $form->createView()]);
     }
 
     /**

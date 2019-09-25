@@ -22,6 +22,8 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $required = $options['isFromAdmin'];
+        $newUser = $options['isNewUser'] ?: false;
+
         $builder
             ->add('username', TextType::class, [
                 'label' => 'form.user.username'
@@ -38,16 +40,26 @@ class UserType extends AbstractType
             ])
         ;
 
-        if($required) {
+        if($required && !$newUser) {
             $builder->add('roles', CollectionType::class, [
                 'label' => 'form.user.role',
                 'entry_type' => ChoiceType::class,
                 'entry_options' => [
                     'choices' => [
-                        'form.user.role_admin' => User::ROLE_ADMIN,
-                        'form.user.role_user' => User::ROLE_USER
+                        'user.role_admin' => User::ROLE_ADMIN,
+                        'user.role_user' => User::ROLE_USER
                     ],
                     'label' => false
+                ]
+            ]);
+        }
+
+        if($required && $newUser) {
+            $builder->add('roles', ChoiceType::class, [
+                'label' => 'form.user.role',
+                'choices' => [
+                    'user.role_admin' => User::ROLE_ADMIN,
+                    'user.role_user' => User::ROLE_USER
                 ]
             ]);
         }
@@ -59,6 +71,6 @@ class UserType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired('isFromAdmin');
+        $resolver->setRequired(['isFromAdmin', 'isNewUser']);
     }
 }

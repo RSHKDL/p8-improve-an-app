@@ -4,6 +4,8 @@ home:
         anonymous: Bienvenue, anonyme !
 
 user:
+    register:
+        title: Inscription
     profile:
         title: Votre profil
         edit: Editer votre profil
@@ -13,9 +15,13 @@ user:
             empty: Vous n'avez pas de tâches.
     create:
         title: Créer un utilisateur
-        success: L'utilisateur a bien été créé !
+        success: L'utilisateur %name a bien été créé !
     update:
         success: L'utilisateur a bien été modifié !
+    delete:
+        success: L'utilisateur a bien été supprimé.
+    role_admin: Administrateur
+    role_user: Utilisateur
 
 task:
     create:
@@ -36,8 +42,18 @@ task:
         created: Créée par
         anonymous: Anonyme
 
+dashboard:
+    title: Liste des utilisateurs
+    no_users: Il n'y a pas encore d'utilisateur enregistré.
+    user:
+        title: Nom d'utilisateur
+        email: Adresse d'utilisateur
+        role: Rôle
+        actions: Actions
+
 button:
     validate: Valider
+    update: Éditer
     delete: Supprimer
     login: Se connecter
     logout: Se déconnecter
@@ -56,5 +72,3 @@ form:
         password_missmatch: Les deux mots de passe doivent correspondre
         email: Votre courriel
         role: Rôle de l'utilisateur
-        role_admin: Administrateur
-        role_user: Utilisateur
