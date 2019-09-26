@@ -110,7 +110,7 @@ class UserController extends Controller
         ]);
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $user = $this->userHandler->update($form->getData());
             $this->addFlash('success', $this->translator->trans('user.update.success', ['%name' => $user->getUsername()]));
 
