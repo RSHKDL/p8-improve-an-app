@@ -69,4 +69,17 @@ final class UserHandler
 
         return $user;
     }
+
+    /**
+     * @param User $user
+     */
+    public function delete(User $user)
+    {
+        $tasks = $user->getTasks();
+        foreach ($tasks as $task) {
+            $task->setAuthor(null);
+        }
+        $this->entityManager->remove($user);
+        $this->entityManager->flush();
+    }
 }

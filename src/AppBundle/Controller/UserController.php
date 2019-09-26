@@ -130,9 +130,7 @@ class UserController extends Controller
         $currentUser = $this->getUser();
         $this->denyAccessUnlessGranted('delete', $currentUser);
 
-        $this->getDoctrine()->getManager()->remove($user);
-        $this->getDoctrine()->getManager()->flush();
-
+        $this->userHandler->delete($user);
         $this->addFlash('success', $this->translator->trans('user.delete.success'));
 
         return $this->redirectToRoute('user_list');

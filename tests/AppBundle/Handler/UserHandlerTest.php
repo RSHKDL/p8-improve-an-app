@@ -69,6 +69,18 @@ class UserHandlerTest extends TestCase
     }
 
     /**
+     * @dataProvider getUpdateData
+     * @param User $user
+     */
+    public function testDelete(User $user)
+    {
+        $this->mockEntityManager->expects($this->once())->method('remove')->with($this->isInstanceOf(User::class));
+        $this->mockEntityManager->expects($this->atLeastOnce())->method('flush');
+
+        $this->userHandler->delete($user);
+    }
+
+    /**
      * @return array
      */
     public function getCreateData()
