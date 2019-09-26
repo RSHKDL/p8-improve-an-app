@@ -74,7 +74,8 @@ class UserController extends Controller
         $this->denyAccessUnlessGranted(User::ROLE_ADMIN);
         $form = $this->createForm(UserType::class, [], [
             'isFromAdmin' => true,
-            'isNewUser' => true
+            'isNewUser' => true,
+            'editSelf' => false
         ]);
         $form->handleRequest($request);
 
@@ -101,21 +102,19 @@ class UserController extends Controller
         $this->denyAccessUnlessGranted('edit', $user);
         /** @var User $currentUser */
         $currentUser = $this->getUser();
+
         $form = $this->createForm(UserType::class, $user, [
             'isFromAdmin' => $currentUser->isAdmin(),
-            'isNewUser' => false
+            'isNewUser' => false,
+            'editSelf' => $currentUser === $user
         ]);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $password = $this->get('security.password_encoder')->encodePassword($user, $user->getPassword());
-            $user->setPassword($password);
+            $user = $this->userHandler->update($form->getData());
+            $this->addFlash('success', $this->translator->trans('user.update.success', ['%name' => $user->getUsername()]));
 
-            $this->getDoctrine()->getManager()->flush();
-
-            $this->addFlash('success', $this->translator->trans('user.update.success'));
-
-            return in_array(User::ROLE_ADMIN, $user->getRoles(), true) ? $this->redirectToRoute('user_list') : $this->redirectToRoute('user_profile');
+            return in_array(User::ROLE_ADMIN, $currentUser->getRoles(), true) ? $this->redirectToRoute('user_list') : $this->redirectToRoute('user_profile');
         }
 
         return $this->render('user/edit.html.twig', ['form' => $form->createView(), 'user' => $user]);

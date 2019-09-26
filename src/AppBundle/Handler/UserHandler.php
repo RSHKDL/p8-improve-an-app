@@ -54,4 +54,19 @@ final class UserHandler
 
         return $user;
     }
+
+    /**
+     * @param User $user
+     * @return User
+     */
+    public function update(User $user): User
+    {
+        if (null !== $user->getPassword()) {
+            $password = $this->passwordEncoder->encodePassword($user, $user->getPassword());
+            $user->setPassword($password);
+        }
+        $this->entityManager->flush();
+
+        return $user;
+    }
 }

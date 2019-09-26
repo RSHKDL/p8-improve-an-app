@@ -21,8 +21,9 @@ class UserType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $required = $options['isFromAdmin'];
-        $newUser = $options['isNewUser'] ?: false;
+        $isFromAdmin = $options['isFromAdmin'];
+        $isNewUser = $options['isNewUser'];
+        $editSelf = $options['editSelf'];
 
         $builder
             ->add('username', TextType::class, [
@@ -31,7 +32,7 @@ class UserType extends AbstractType
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'invalid_message' => 'form.user.password_mismatch',
-                'required' => !$required,
+                'required' => !$isFromAdmin,
                 'first_options'  => ['label' => 'form.user.password'],
                 'second_options' => ['label' => 'form.user.password_repeat'],
             ])
@@ -40,7 +41,7 @@ class UserType extends AbstractType
             ])
         ;
 
-        if($required && !$newUser) {
+        if($isFromAdmin && !$isNewUser) {
             $builder->add('roles', CollectionType::class, [
                 'label' => 'form.user.role',
                 'entry_type' => ChoiceType::class,
@@ -54,7 +55,12 @@ class UserType extends AbstractType
             ]);
         }
 
-        if($required && $newUser) {
+        //@todo admin should not change user password. Add a reset forgotten password service instead.
+        if($isFromAdmin && !$editSelf) {
+            $builder->remove('password');
+        }
+
+        if($isFromAdmin && $isNewUser) {
             $builder->add('roles', ChoiceType::class, [
                 'label' => 'form.user.role',
                 'choices' => [
@@ -71,6 +77,6 @@ class UserType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired(['isFromAdmin', 'isNewUser']);
+        $resolver->setRequired(['isFromAdmin', 'isNewUser', 'editSelf']);
     }
 }

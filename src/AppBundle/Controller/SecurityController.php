@@ -63,7 +63,8 @@ class SecurityController extends Controller
     {
         $form = $this->createForm(UserType::class, [], [
             'isFromAdmin' => false,
-            'isNewUser' => true
+            'isNewUser' => true,
+            'editSelf' => true
         ]);
 
         $form->handleRequest($request);
