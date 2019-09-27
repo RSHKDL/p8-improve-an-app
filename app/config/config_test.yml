@@ -14,3 +14,11 @@ web_profiler:
 
 swiftmailer:
     disable_delivery: true
+
+doctrine:
+    dbal:
+        host: 127.0.0.1
+        port: null
+        dbname: test_p8_todoandco
+        user: root
+        password: null

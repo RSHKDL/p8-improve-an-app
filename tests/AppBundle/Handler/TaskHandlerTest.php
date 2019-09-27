@@ -37,7 +37,7 @@ class TaskHandlerTest extends TestCase
      * @param $username
      * @throws \Exception
      */
-    public function testCreateTask($title, $content, $username)
+    public function testCreateTaskWithValidData($title, $content, $username)
     {
         $this->mockEntityManager->expects($this->once())->method('persist')->with($this->isInstanceOf(Task::class));
         $this->mockEntityManager->expects($this->atLeastOnce())->method('flush');
