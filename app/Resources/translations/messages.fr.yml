@@ -26,7 +26,7 @@ user:
 task:
     create:
         title: Créér une tâche
-        success: La tâche a été bien été ajoutée !
+        success: La tâche a bien été ajoutée !
     update:
         success: La tâche a bien été modifiée.
     delete:
