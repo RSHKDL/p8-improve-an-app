@@ -112,6 +112,10 @@ class TaskControllerTest extends WebTestCase
         return $this->client->getContainer();
     }
 
+    /**
+     * @param bool $isAdmin
+     * @return User
+     */
     private function fetchTestUser($isAdmin = false)
     {
         $username = $isAdmin ? AppFixtures::ADMIN_NAME : AppFixtures::USER_NAME;

@@ -19,7 +19,7 @@ final class TaskVoter extends Voter
 
     /**
      * @param string $attribute
-     * @param mixed $subject
+     * @param Task $subject
      * @return bool
      */
     protected function supports($attribute, $subject)
@@ -30,7 +30,7 @@ final class TaskVoter extends Voter
 
     /**
      * @param string $attribute
-     * @param mixed $subject
+     * @param Task $subject
      * @param TokenInterface $token
      * @return bool
      */
