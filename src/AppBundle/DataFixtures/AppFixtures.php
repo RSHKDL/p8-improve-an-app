@@ -3,6 +3,7 @@
 namespace AppBundle\DataFixtures;
 
 use AppBundle\Entity\User;
+use AppBundle\Handler\TaskHandler;
 use AppBundle\Handler\UserHandler;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -13,8 +14,9 @@ use Doctrine\Common\Persistence\ObjectManager;
  */
 class AppFixtures extends Fixture
 {
-    const ADMIN_NAME = 'admin';
-    const USER_NAME = 'hansolo';
+    const ADMIN = 'admin';
+    const HAN_SOLO = 'han_solo';
+    const LUKE_SKYWALKER = 'luke_skywalker';
 
     /**
      * @var UserHandler
@@ -22,34 +24,63 @@ class AppFixtures extends Fixture
     private $userHandler;
 
     /**
+     * @var TaskHandler
+     */
+    private $taskHandler;
+
+    /**
      * AppFixtures constructor.
      * @param UserHandler $userHandler
+     * @param TaskHandler $taskHandler
      */
-    public function __construct(UserHandler $userHandler)
-    {
+    public function __construct(
+        UserHandler $userHandler,
+        TaskHandler $taskHandler
+    ) {
         $this->userHandler = $userHandler;
+        $this->taskHandler = $taskHandler;
     }
 
     /**
      * Load data fixtures with the passed EntityManager
      *
      * @param ObjectManager $manager
+     * @throws \Exception
      */
     public function load(ObjectManager $manager)
     {
-        $userData = [
-            'username' => self::USER_NAME,
+        $userOneData = [
+            'username' => self::HAN_SOLO,
             'password' => '1234',
-            'email' => self::USER_NAME.'@mail.com',
+            'email' => self::HAN_SOLO.'@mail.com',
+            'roles' => User::ROLE_USER
+        ];
+        $userTwoData = [
+            'username' => self::LUKE_SKYWALKER,
+            'password' => '1234',
+            'email' => self::LUKE_SKYWALKER.'@mail.com',
             'roles' => User::ROLE_USER
         ];
         $adminData = [
-            'username' => self::ADMIN_NAME,
+            'username' => self::ADMIN,
             'password' => '1234',
-            'email' => self::ADMIN_NAME.'@mail.com',
+            'email' => self::ADMIN.'@mail.com',
             'roles' => User::ROLE_ADMIN
         ];
-        $this->userHandler->create($userData);
+        $hanSolo = $this->userHandler->create($userOneData);
+        $lukeSkywalker = $this->userHandler->create($userTwoData);
         $this->userHandler->create($adminData);
+
+        $taskOneData = [
+            'title' => 'Some title',
+            'content' => 'Some content'
+        ];
+        $taskTwoData = [
+            'title' => 'Some other title',
+            'content' => 'Some other content'
+        ];
+        $this->taskHandler->create($taskOneData, $hanSolo);
+        $this->taskHandler->create($taskTwoData, $lukeSkywalker);
+
     }
 }
