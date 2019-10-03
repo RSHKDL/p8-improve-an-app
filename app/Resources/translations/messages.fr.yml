@@ -17,6 +17,7 @@ user:
         title: Créer un utilisateur
         success: L'utilisateur %name a bien été créé !
     update:
+        title: Modifier
         success: L'utilisateur a bien été modifié !
     delete:
         success: L'utilisateur a bien été supprimé.
@@ -54,6 +55,7 @@ dashboard:
 button:
     validate: Valider
     update: Éditer
+    modify: Modifier
     delete: Supprimer
     login: Se connecter
     logout: Se déconnecter

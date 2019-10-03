@@ -60,7 +60,6 @@ class TaskController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var User $user */
             $user = $this->getUser();
-
             $this->taskHandler->create($form->getData(), $user);
             $this->addFlash('success', $this->translator->trans('task.create.success'));
 
@@ -79,13 +78,11 @@ class TaskController extends Controller
     public function editAction(Task $task, Request $request)
     {
         $this->denyAccessUnlessGranted('edit', $task);
-
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
-
             $this->addFlash('success', $this->translator->trans('task.update.success'));
 
             return $this->redirectToRoute('task_list');
@@ -125,11 +122,9 @@ class TaskController extends Controller
     public function deleteTaskAction(Task $task)
     {
         $this->denyAccessUnlessGranted('edit', $task);
-
         $em = $this->getDoctrine()->getManager();
         $em->remove($task);
         $em->flush();
-
         $this->addFlash('success', $this->translator->trans('task.delete.success'));
 
         return $this->redirectToRoute('task_list');

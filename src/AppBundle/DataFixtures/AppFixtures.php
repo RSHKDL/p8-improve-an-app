@@ -14,7 +14,7 @@ use Doctrine\Common\Persistence\ObjectManager;
  */
 class AppFixtures extends Fixture
 {
-    const ADMIN = 'admin';
+    const DARTH_VADER = 'darth_vader';
     const HAN_SOLO = 'han_solo';
     const LUKE_SKYWALKER = 'luke_skywalker';
 
@@ -52,19 +52,19 @@ class AppFixtures extends Fixture
         $userOneData = [
             'username' => self::HAN_SOLO,
             'password' => '1234',
-            'email' => self::HAN_SOLO.'@mail.com',
+            'email' => self::HAN_SOLO.'@rebel.com',
             'roles' => User::ROLE_USER
         ];
         $userTwoData = [
             'username' => self::LUKE_SKYWALKER,
             'password' => '1234',
-            'email' => self::LUKE_SKYWALKER.'@mail.com',
+            'email' => self::LUKE_SKYWALKER.'@rebel.com',
             'roles' => User::ROLE_USER
         ];
         $adminData = [
-            'username' => self::ADMIN,
+            'username' => self::DARTH_VADER,
             'password' => '1234',
-            'email' => self::ADMIN.'@mail.com',
+            'email' => self::DARTH_VADER.'@empire.com',
             'roles' => User::ROLE_ADMIN
         ];
         $hanSolo = $this->userHandler->create($userOneData);
