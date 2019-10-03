@@ -90,6 +90,9 @@ class TaskControllerTest extends BaseControllerTest
         $this->assertContains('I am an admin and I can edit the content', $this->client->getResponse()->getContent());
     }
 
+    /**
+     * @todo User should only be able to toggle owned or attributed task
+     */
     public function testToggleTask()
     {
         $this->client->followRedirects();
@@ -106,8 +109,6 @@ class TaskControllerTest extends BaseControllerTest
 
         $this->client->request('GET', '/tasks/2/toggle');
         $this->assertContains('La tâche Some other title a bien été marquée comme non terminée.', $this->client->getResponse()->getContent());
-
-        $this->markTestIncomplete('User should only be able to toggle owned or attributed task');
     }
 
     public function testUserCanOnlyDeleteOwnedTask()

@@ -56,6 +56,7 @@ class UserControllerTest extends BaseControllerTest
         $crawler = $this->client->request('GET', '/users/1/edit');
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertContains('han_solo@rebel.com', $this->client->getResponse()->getContent());
+
         $form = $crawler->selectButton('Modifier')->form();
         $form['user[email]']->setValue('chewbaca@rebel.org');
         $crawler = $this->client->submit($form);

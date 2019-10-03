@@ -39,6 +39,11 @@ class BaseControllerTest extends WebTestCase
         $this->dropDatabase($application);
     }
 
+    public function testThisIsNotATest()
+    {
+        $this->assertTrue(true);
+    }
+
     /**
      * @param Client $client
      * @param User $user

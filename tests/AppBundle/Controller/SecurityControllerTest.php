@@ -2,40 +2,71 @@
 
 namespace Tests\AppBundle\Tests;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Response;
+use Tests\AppBundle\Controller\BaseControllerTest;
 
 /**
  * Class SecurityControllerTest
  * @author ereshkidal
  */
-class SecurityControllerTest extends WebTestCase
+class SecurityControllerTest extends BaseControllerTest
 {
-    public function testRegister()
+    public function testRegisterThenLoginNewUser()
     {
-        $this->markTestSkipped('need test database setup');
+        $this->client->followRedirects();
+        $crawler = $this->client->request('GET', '/register');
+        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertContains('Inscription', $this->client->getResponse()->getContent());
 
-        $client = static::createClient();
-        $client->followRedirects();
-        $crawler = $client->request('GET', '/register');
-
-        $this->assertSame(200, $client->getResponse()->getStatusCode());
-        $form = $crawler->selectButton('Ajouter')->form();
-
-        $form['user[username]']->setValue('John');
+        $form = $crawler->selectButton('S\'inscrire')->form();
+        $form['user[username]']->setValue('chewbacca');
         $form['user[password][first]']->setValue('1234');
         $form['user[password][second]']->setValue('1234');
-        $form['user[email]']->setValue('john@mail.com');
+        $form['user[email]']->setValue('chewbacca@rebel.com');
+        $crawler = $this->client->submit($form);
+        $this->assertContains('Superbe !', $this->client->getResponse()->getContent());
 
-        $client->submit($form);
-        $this->assertContains('Superbe !', $client->getResponse()->getContent());
+        $form = $crawler->selectButton('Se connecter')->form();
+        $form['_username']->setValue('chewbacca');
+        $form['_password']->setValue('1234');
+        $this->client->submit($form);
+        $this->assertContains('chewbacca', $this->client->getResponse()->getContent());
+        $this->assertContains('Se déconnecter', $this->client->getResponse()->getContent());
     }
 
-    public function testLogin()
+    public function testCannotRegisterUserWithSameEmail()
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/register');
+        $this->markTestSkipped('Must setup a custom duplicate validator');
 
-        $this->assertSame(200, $client->getResponse()->getStatusCode());
-        //$this->assertContains('Hello World', $crawler->filter('h1')->text());
+        $crawler = $this->client->request('GET', '/register');
+        $form = $crawler->selectButton('S\'inscrire')->form();
+        $form['user[username]']->setValue('chewbacca');
+        $form['user[password][first]']->setValue('1234');
+        $form['user[password][second]']->setValue('1234');
+        $form['user[email]']->setValue('han_solo@rebel.com');
+        $this->client->submit($form);
+        $this->assertContains('This email already exist', $this->client->getResponse()->getContent());
+    }
+
+    public function testLoginWithBadCredentials()
+    {
+        $this->client->followRedirects();
+        $crawler = $this->client->request('GET', '/login');
+        $form = $crawler->selectButton('Se connecter')->form();
+        $form['_username']->setValue('han_solo');
+        $form['_password']->setValue('wrong password');
+        $this->client->submit($form);
+        $this->assertContains('Identifiants invalides.', $this->client->getResponse()->getContent());
+    }
+
+    public function testLoginWithGoodCredentials()
+    {
+        $this->client->followRedirects();
+        $crawler = $this->client->request('GET', '/login');
+        $form = $crawler->selectButton('Se connecter')->form();
+        $form['_username']->setValue('han_solo');
+        $form['_password']->setValue('1234');
+        $this->client->submit($form);
+        $this->assertContains('han_solo', $this->client->getResponse()->getContent());
     }
 }
