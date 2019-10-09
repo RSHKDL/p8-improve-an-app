@@ -4,28 +4,49 @@ namespace AppBundle\Command;
 
 use AppBundle\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
- * Class AppCreateAdminCommand
+ * Class CreateAdminCommand
  * @author ereshkidal
  */
-class AppCreateAdminCommand extends ContainerAwareCommand
+final class CreateAdminCommand extends Command
 {
+    protected static $defaultName = 'app:create-admin';
+
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+
+    /**
+     * @var UserPasswordEncoderInterface
+     */
+    private $passwordEncoder;
+
+    /**
+     * CreateAdminCommand constructor.
+     * @param EntityManagerInterface $entityManager
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param null $name
+     */
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        UserPasswordEncoderInterface $passwordEncoder,
+        $name = null
+    ) {
+        parent::__construct($name);
+        $this->entityManager = $entityManager;
+        $this->passwordEncoder = $passwordEncoder;
+    }
+
     protected function configure()
     {
-        $this
-            ->setName('app:create-admin')
-            ->setDescription('Create an user with admin privileges')
-            ->addArgument('argument', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option', null, InputOption::VALUE_NONE, 'Option description')
-        ;
+        $this->setDescription('Create an user with admin privileges');
     }
 
     /**
@@ -42,19 +63,14 @@ class AppCreateAdminCommand extends ContainerAwareCommand
         $password = $this->askAndConfirmPassword($style);
         $email = $style->ask('Email?');
 
-        /** @var UserPasswordEncoderInterface $passwordEncoder */
-        $passwordEncoder = $this->getContainer()->get('security.password_encoder');
-
         $admin = new User();
         $admin->setUsername($username);
         $admin->setEmail($email);
-        $admin->setPassword($passwordEncoder->encodePassword($admin, $password));
+        $admin->setPassword($this->passwordEncoder->encodePassword($admin, $password));
         $admin->setRoles([User::ROLE_ADMIN]);
 
-        /** @var EntityManagerInterface $em */
-        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $em->persist($admin);
-        $em->flush();
+        $this->entityManager->persist($admin);
+        $this->entityManager->flush();
 
         $style->success('Administrator successfully created');
     }

@@ -81,6 +81,5 @@ class AppFixtures extends Fixture
         ];
         $this->taskHandler->create($taskOneData, $hanSolo);
         $this->taskHandler->create($taskTwoData, $lukeSkywalker);
-
     }
 }

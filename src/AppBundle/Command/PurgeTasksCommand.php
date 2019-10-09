@@ -63,6 +63,8 @@ final class PurgeTasksCommand extends Command
 
         if ($input->getOption('all')) {
             $this->purgeAll($io);
+
+            return;
         }
 
         $this->purgeAnonymous($io);
@@ -75,20 +77,24 @@ final class PurgeTasksCommand extends Command
     {
         $tasks = $this->taskRepository->findAllAnonymous();
         $number = count($tasks);
-        $this->checkIfPurgeNeeded($number, $io);
+        if(!$this->checkIfPurgeNeeded($number)) {
+            $io->success('No anonymous tasks to purge');
+
+            return;
+        }
 
         $io->caution(sprintf('%s anonymous tasks will be deleted', $number));
         if (!$io->confirm('Are you sure ?')) {
             $io->error('Purge aborted');
 
-            exit;
+            return;
         }
 
         foreach ($tasks as $task) {
             $this->entityManager->remove($task);
         }
         $this->entityManager->flush();
-        $io->success('Tasks purged');
+        $io->success('All anonymous tasks purged');
     }
 
     /**
@@ -98,32 +104,32 @@ final class PurgeTasksCommand extends Command
     {
         $tasks = $this->taskRepository->findAll();
         $number = count($tasks);
-        $this->checkIfPurgeNeeded($number, $io, true);
+        if(!$this->checkIfPurgeNeeded($number)) {
+            $io->success('No tasks to purge');
+
+            return;
+        }
+
         $io->warning(sprintf('You are about to delete all %s tasks.', $number));
         if (!$io->confirm('Are you sure ?', false)) {
             $io->error('Purge aborted');
 
-            exit;
+            return;
         }
 
         foreach ($tasks as $task) {
             $this->entityManager->remove($task);
         }
         $this->entityManager->flush();
-        $io->success('Tasks purged');
+        $io->success('All tasks purged');
     }
 
     /**
      * @param int $number
-     * @param SymfonyStyle $io
-     * @param bool $all
+     * @return bool
      */
-    private function checkIfPurgeNeeded($number, SymfonyStyle $io, $all = false)
+    private function checkIfPurgeNeeded($number)
     {
-        if ($number === 0) {
-            $io->success(sprintf('No %s tasks to purge', $all === false ? 'anonymous' : ''));
-
-            exit;
-        }
+        return !($number === 0);
     }
 }
