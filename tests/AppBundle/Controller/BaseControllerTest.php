@@ -12,6 +12,11 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
+/**
+ * Class BaseControllerTest
+ * @author ereshkidal
+ * @coversNothing
+ */
 class BaseControllerTest extends WebTestCase
 {
     /**

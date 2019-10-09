@@ -7,6 +7,11 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 
+/**
+ * Class BaseCommandTest
+ * @author ereshkidal
+ * @coversNothing
+ */
 class BaseCommandTest extends KernelTestCase
 {
     public function testThisIsNotATest()

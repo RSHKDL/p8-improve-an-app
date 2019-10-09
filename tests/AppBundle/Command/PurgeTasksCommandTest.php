@@ -4,6 +4,11 @@ namespace Tests\AppBundle\Command;
 
 use Symfony\Component\Console\Tester\CommandTester;
 
+/**
+ * Class PurgeTasksCommandTest
+ * @author ereshkidal
+ * @covers \AppBundle\Command\PurgeTasksCommand
+ */
 class PurgeTasksCommandTest extends BaseCommandTest
 {
     /**

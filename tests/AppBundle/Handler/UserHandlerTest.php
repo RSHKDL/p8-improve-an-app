@@ -11,6 +11,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 /**
  * Class UserHandlerTest
  * @author ereshkidal
+ * @covers \AppBundle\Handler\UserHandler
  */
 class UserHandlerTest extends TestCase
 {

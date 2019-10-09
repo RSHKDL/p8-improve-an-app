@@ -4,6 +4,11 @@ namespace Tests\AppBundle\Command;
 
 use Symfony\Component\Console\Tester\CommandTester;
 
+/**
+ * Class CreateAdminCommandTest
+ * @author ereshkidal
+ * @covers \AppBundle\Command\CreateAdminCommand
+ */
 class CreateAdminCommandTest extends BaseCommandTest
 {
     /**

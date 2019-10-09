@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Class TaskHandlerTest
  * @author ereshkidal
+ * @covers \AppBundle\Handler\TaskHandler
  */
 class TaskHandlerTest extends TestCase
 {

@@ -12,6 +12,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 /**
  * Class TaskVoterTest
  * @author ereshkidal
+ * @covers \AppBundle\Security\Voter\TaskVoter
  */
 class TaskVoterTest extends TestCase
 {
