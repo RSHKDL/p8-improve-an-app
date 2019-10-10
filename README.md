@@ -18,8 +18,8 @@ This project is a very basic **To do list**. The goal was to improve upon an exi
 
 ## Install
 
-1. Clone or download the repository `create-the-repo-first` into your environment.
-2. Change the files **.env.dist** and with your own data.
+1. Clone or download the repository `git@github.com:RSHKDL/p8-improve-an-app.git` into your environment.
+2. Change the files **app/config/parameters.yml** and with your own data.
 3. Install the database and optionally inject the fixtures:
     ```
     $ bin/console doctrine:database:create
