@@ -6,6 +6,8 @@ use AppBundle\Entity\Task;
 use AppBundle\Entity\User;
 use AppBundle\Security\Voter\TaskVoter;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
 /**
@@ -16,14 +18,14 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 class TaskVoterTest extends TestCase
 {
     /**
-     * @dataProvider getData
-     * @param $subject
-     * @param array $attributes
+     * @dataProvider voterProvider
+     * @param User|null $user
+     * @param bool $isAuthor
      * @param int $expected
+     * @throws \Exception
      */
-    public function testVote($subject, array $attributes, $expected)
+    public function testVote(?User $user, $isAuthor, $expected)
     {
-        $this->assertTrue(true);
         /*
          * Mocking the token is a pain in the ass.
          * I'll follow the "Don't mock what you don't own" principle,
@@ -31,59 +33,47 @@ class TaskVoterTest extends TestCase
          * I'll test the voters in the functional tests.
          * https://stackoverflow.com/questions/35579884/symfony-unit-test-security-acl-annotation
          * https://davesquared.net/2011/04/dont-mock-types-you-dont-own.html
-         *
-        $mockToken = $this
-            ->getMockBuilder(UsernamePasswordToken::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['getUser'])
-            ->getMock();
+         */
+        $task = new Task();
+        $token = new AnonymousToken('secret', 'anonymous');
 
-        $mockToken
-            ->expects($this->once())
-            ->method('getUser')
-            ->willReturn($this->createMockUser());
+        if ($user) {
+            $token = new UsernamePasswordToken($user, 'credentials', 'memory');
+        }
+
+        if ($user && $isAuthor) {
+            $task->setAuthor($user);
+        }
 
         $taskVoter = new TaskVoter();
-        $result = $taskVoter->vote($mockToken, $subject, $attributes);
+        $result = $taskVoter->vote($token, $task, [TaskVoter::CAN_EDIT]);
 
         $this->assertEquals($expected, $result);
-        */
     }
 
     /**
      * @return array
      * @throws \Exception
      */
-    public function getData()
+    public function voterProvider()
     {
         return [
-            // $task, attributes, expected
-            '#1' => [$this->createMockTask(), [TaskVoter::CAN_VIEW], VoterInterface::ACCESS_GRANTED],
-            '#2' => [$this->createMockTask(), [TaskVoter::CAN_EDIT], VoterInterface::ACCESS_GRANTED]
+            // $user, isAuthor, expected
+            '#1 same user' => [$this->createMockUser(), true, VoterInterface::ACCESS_GRANTED],
+            '#2 other user' => [$this->createMockUser(), false, VoterInterface::ACCESS_DENIED],
+            '#3 no user' => [null, false, VoterInterface::ACCESS_DENIED]
         ];
     }
 
     /**
-     * @return User
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function createMockUser()
     {
-        $user = new User();
-        $user->setUsername('toto');
-        $user->setRoles([User::ROLE_USER]);
+        $user = $this->createMock(User::class);
+        $user->method('getId')->willReturn(1);
+        $user->method('getRoles')->willReturn([User::ROLE_USER]);
 
         return $user;
-    }
-
-    /**
-     * @return Task
-     * @throws \Exception
-     */
-    private function createMockTask()
-    {
-        $task = new Task();
-        $task->setAuthor($this->createMockUser());
-
-        return $task;
     }
 }
