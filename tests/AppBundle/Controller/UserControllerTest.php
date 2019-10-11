@@ -99,6 +99,6 @@ class UserControllerTest extends BaseControllerTest
 
     public function testAdminCannotDeleteSelf()
     {
-        $this->markTestIncomplete('Should be implemented and tested');
+        $this->markTestSkipped('Should be implemented and tested');
     }
 }
