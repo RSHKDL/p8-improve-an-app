@@ -30,7 +30,7 @@ class TaskTest extends TestCase
     /**
      * @throws \Exception
      */
-    public function testTaskIsDone()
+    public function testIsDone()
     {
         $task = new Task();
 
@@ -39,5 +39,15 @@ class TaskTest extends TestCase
         $this->assertTrue($task->isDone());
         $task->toggle(false);
         $this->assertFalse($task->isDone());
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testSetCreatedAt()
+    {
+        $task = new Task();
+
+        $this->assertInstanceOf(\DateTime::class, $task->getCreatedAt());
     }
 }
