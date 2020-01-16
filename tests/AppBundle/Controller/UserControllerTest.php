@@ -97,6 +97,9 @@ class UserControllerTest extends BaseControllerTest
         $this->assertNotContains('luke_skywalker', $this->client->getResponse()->getContent());
     }
 
+    /**
+     * @todo test skipped because feature not implemented yet
+     */
     public function testAdminCannotDeleteSelf()
     {
         $this->markTestSkipped('Should be implemented and tested');

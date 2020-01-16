@@ -34,6 +34,9 @@ class SecurityControllerTest extends BaseControllerTest
         $this->assertContains('Se déconnecter', $this->client->getResponse()->getContent());
     }
 
+    /**
+     * @todo test skipped because custom duplicate validator is missing
+     */
     public function testCannotRegisterUserWithSameEmail()
     {
         $this->markTestSkipped('Must setup a custom duplicate validator');
