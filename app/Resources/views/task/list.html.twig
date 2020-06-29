@@ -4,7 +4,9 @@
 
 {% block body %}
     {% if tasks is not empty %}
-        <a href="{{ path('task_create') }}" class="btn btn-info pull-right">{{ 'task.create.title'|trans }}</a>
+    <header class="mb-3">
+        <a href="{{ path('task_create') }}" class="btn btn-info">{{ 'task.create.title'|trans }}</a>
+    </header>
     {% endif %}
     <div class="row">
         {% for task in tasks %}

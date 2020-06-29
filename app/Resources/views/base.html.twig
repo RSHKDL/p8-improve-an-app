@@ -28,9 +28,8 @@
         <nav class="navbar navbar-light navbar-fixed-top" style="background-color: #e3f2fd;" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="{{ path('homepage') }}">To Do List app</a>
-
                     <img src="{{ asset('img/Logo_OpenClassrooms.png') }}" alt="OpenClassrooms" />
+                    <a class="navbar-brand" href="{{ path('homepage') }}">To Do List app</a>
                     <span>
                         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                             <span>
@@ -98,7 +97,7 @@
 
         </div>
 
-        <script src="{{ asset('js/jquery.js') }}"></script>
+        <script src="{{ asset('js/jquery-3.5.1.min.js') }}"></script>
         <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     </body>
 </html>
