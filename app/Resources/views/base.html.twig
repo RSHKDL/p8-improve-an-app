@@ -25,31 +25,52 @@
     </head>
 
     <body>
-        <nav class="navbar navbar-light navbar-fixed-top" style="background-color: #e3f2fd;" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <img src="{{ asset('img/Logo_OpenClassrooms.png') }}" alt="OpenClassrooms" />
-                    <a class="navbar-brand" href="{{ path('homepage') }}">To Do List app</a>
-                    <span>
-                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                            <span>
-                                {{ 'home.welcome.default'|trans }}
-                                <a href="{{ path('user_profile') }}">{{ app.user.username }}</a>
-                            </span>
-                            <a href="{{ path('logout') }}" class="btn btn-danger">{{ 'button.logout'|trans }}</a>
-                            {% if is_granted('ROLE_ADMIN') %}
-                                <a href="{{ path('user_list') }}" class="btn btn-primary">{{ 'button.dashboard'|trans }}</a>
-                            {% endif %}
-                        {% else %}
-                            <span>{{ 'home.welcome.anonymous'|trans }}</span>
-                            <a href="{{ path('register') }}" class="btn btn-primary">{{ 'button.register'|trans }}</a>
-                        {% endif %}
+        <nav class="navbar navbar-expand-lg navbar-light bg-light" role="navigation">
+            <img src="{{ asset('img/Logo_OpenClassrooms.png') }}" alt="OpenClassrooms" />
+            <a class="navbar-brand ml-3" href="{{ path('homepage') }}">To Do & Co</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">{{ 'home.nav.tasks'|trans }}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('user_profile') }}">{{ 'home.nav.profile'|trans }}</a>
+                    </li>
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <li class="nav-item">
+                        <a href="{{ path('user_list') }}" class="nav-link">{{ 'home.nav.dashboard'|trans }}</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav justify-content-end">
 
-                        {% if not app.user and 'login' != app.request.attributes.get('_route') %}
-                            <a href="{{ path('login') }}" class="btn btn-success">{{ 'button.login'|trans }}</a>
-                        {% endif %}
-                    </span>
-                </div>
+                    <li class="nav-item">
+                        <a href="{{ path('logout') }}" class="nav-link">
+                            <span class="fas fa-sign-out-alt" aria-hidden="true"></span> {{ 'button.logout'|trans }}
+                        </a>
+                    </li>
+                </ul>
+                {% else %}
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a href="{{ path('register') }}" class="nav-link">
+                            <span class="fas fa-user-plus" aria-hidden="true"></span> {{ 'button.register'|trans }}
+                        </a>
+                    </li>
+                    {% if not app.user and 'login' != app.request.attributes.get('_route') %}
+                    <li class="nav-item">
+                        <a href="{{ path('login') }}" class="nav-link">
+                            <span class="fas fa-sign-in-alt" aria-hidden="true"></span> {{ 'button.login'|trans }}
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+                {% endif %}
+
             </div>
         </nav>
 
@@ -99,5 +120,6 @@
 
         <script src="{{ asset('js/jquery-3.5.1.min.js') }}"></script>
         <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+        <script src="https://kit.fontawesome.com/5842a4c551.js" crossorigin="anonymous"></script>
     </body>
 </html>

@@ -1,7 +1,8 @@
 home:
-    welcome:
-        default: Bienvenue
-        anonymous: Bienvenue, anonyme !
+    nav:
+        tasks: Mes tâches
+        profile: Mon compte
+        dashboard: Dashboard
 
 user:
     register:
@@ -60,7 +61,6 @@ button:
     login: Se connecter
     logout: Se déconnecter
     register: S'inscrire
-    dashboard: Dashboard
     
 flash:
     success: Superbe !
