@@ -54,6 +54,7 @@ dashboard:
         actions: Actions
 
 button:
+    add: Ajouter
     validate: Valider
     update: Éditer
     modify: Modifier

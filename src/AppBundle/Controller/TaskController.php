@@ -41,9 +41,24 @@ class TaskController extends Controller
     /**
      * @Route("/tasks", name="task_list")
      */
-    public function listAction()
+    public function listTasks()
     {
-        return $this->render('task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository('AppBundle:Task')->findAll()]);
+        $currentUser = $this->getUser();
+        return $this->render('task/list.html.twig', [
+            'tasks' => $this->getDoctrine()->getRepository('AppBundle:Task')->findAllByUser($currentUser)
+        ]);
+    }
+
+    /**
+     * @Route("/tasks/archived", name="task_archived")
+     * @return Response
+     */
+    public function listArchivedTasks()
+    {
+        $currentUser = $this->getUser();
+        return $this->render('task/list.html.twig', [
+            'tasks' => $this->getDoctrine()->getRepository('AppBundle:Task')->findAllByUser($currentUser, true)
+        ]);
     }
 
     /**
