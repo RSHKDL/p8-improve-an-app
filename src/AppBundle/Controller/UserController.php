@@ -127,8 +127,7 @@ class UserController extends Controller
      */
     public function deleteAction(User $user)
     {
-        $currentUser = $this->getUser();
-        $this->denyAccessUnlessGranted('delete', $currentUser);
+        $this->denyAccessUnlessGranted('delete', $user);
 
         $this->userHandler->delete($user);
         $this->addFlash('success', $this->translator->trans('user.delete.success'));

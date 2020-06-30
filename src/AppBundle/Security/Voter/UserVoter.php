@@ -53,7 +53,7 @@ final class UserVoter extends Voter
                 return $this->canView($currentUser, $user);
                 break;
             case self::CAN_DELETE:
-                return $this->canDelete($currentUser);
+                return $this->canDelete($currentUser, $user);
                 break;
         }
 
@@ -82,10 +82,11 @@ final class UserVoter extends Voter
 
     /**
      * @param User $currentUser
+     * @param User $user
      * @return bool
      */
-    private function canDelete(User $currentUser)
+    private function canDelete(User $currentUser, User $user)
     {
-        return in_array(User::ROLE_ADMIN, $currentUser->getRoles(), true);
+        return $currentUser !== $user && in_array(User::ROLE_ADMIN, $currentUser->getRoles(), true);
     }
 }
