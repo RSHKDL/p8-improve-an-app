@@ -38,6 +38,9 @@
                         <a class="nav-link" href="{{ path('task_list') }}">{{ 'home.nav.tasks'|trans }}</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ path('task_public') }}">{{ 'home.nav.public'|trans }}</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ path('user_profile') }}">{{ 'home.nav.profile'|trans }}</a>
                     </li>
                     {% if is_granted('ROLE_ADMIN') %}

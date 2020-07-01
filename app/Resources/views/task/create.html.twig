@@ -1,11 +1,10 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="row">
-        {{ form_start(form, {'action' : path('task_create')}) }}
-            {{ form_widget(form) }}
+    <h1>{{ 'task.create.title'|trans }}</h1>
+    {{ form_start(form, {'action' : path('task_create')}) }}
+        {{ form_widget(form) }}
 
-            <button type="submit" class="btn btn-success">{{ 'button.add'|trans }}</button>
-        {{ form_end(form) }}
-    </div>
+        <button type="submit" class="btn btn-success">{{ 'button.add'|trans }}</button>
+    {{ form_end(form) }}
 {% endblock %}

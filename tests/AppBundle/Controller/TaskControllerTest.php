@@ -27,12 +27,12 @@ class TaskControllerTest extends BaseControllerTest
         $crawler = $this->client->request('GET', '/tasks');
         $this->assertContains('/tasks', $crawler->getUri());
         $this->assertContains(AppFixtures::HAN_SOLO, $this->client->getResponse()->getContent());
-        $this->assertGreaterThan(0, $crawler->filter('html:contains("Créér une tâche")')->count());
+        $this->assertGreaterThan(0, $crawler->filter('html:contains("Ajouter une tâche")')->count());
 
-        $link = $crawler->selectLink('Créér une tâche')->link();
+        $link = $crawler->selectLink('Ajouter une tâche')->link();
         $crawler = $this->client->click($link);
         $this->assertContains('/tasks/create', $crawler->getUri());
-        $this->assertContains(AppFixtures::HAN_SOLO, $this->client->getResponse()->getContent());
+        $this->assertContains('Ajouter une tâche', $this->client->getResponse()->getContent());
         $this->assertEquals(1, $crawler->filter('form')->count());
 
         $form = $crawler->selectButton('Ajouter')->form();
@@ -40,7 +40,7 @@ class TaskControllerTest extends BaseControllerTest
         $form['task[content]']->setValue('This is a new task');
         $this->client->submit($form);
         $this->assertContains('La tâche a bien été ajoutée !', $this->client->getResponse()->getContent());
-        $this->assertContains('Créée par '.AppFixtures::HAN_SOLO, $this->client->getResponse()->getContent());
+        $this->assertContains('Hello world', $this->client->getResponse()->getContent());
     }
 
     public function testEditTask()
@@ -66,7 +66,7 @@ class TaskControllerTest extends BaseControllerTest
         $this->client->followRedirects();
         $this->logIn($this->client, $this->fetchHanSoloOrAdmin());
 
-        $crawler = $this->client->request('GET', '/tasks');
+        $crawler = $this->client->request('GET', '/tasks/public');
         $link = $crawler->selectLink('Some other title')->link();
         $this->client->click($link);
         $this->assertEquals(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
@@ -77,7 +77,7 @@ class TaskControllerTest extends BaseControllerTest
         $this->client->followRedirects();
         $this->logIn($this->client, $this->fetchHanSoloOrAdmin(true));
 
-        $crawler = $this->client->request('GET', '/tasks');
+        $crawler = $this->client->request('GET', '/tasks/public');
         $link = $crawler->selectLink('Some title')->link();
         $crawler = $this->client->click($link);
         $this->assertContains('/tasks/1/edit', $crawler->getUri());

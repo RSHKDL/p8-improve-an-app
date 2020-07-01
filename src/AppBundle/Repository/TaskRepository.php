@@ -39,6 +39,26 @@ class TaskRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param ?string $filter
+     * @param bool $isDone
+     * @return array
+     */
+    public function findAllWithFilter($filter = null, $isDone = false): array
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->andWhere('t.isDone = :status')
+            ->setParameter('status', $isDone);
+
+        if ($filter !== null) {
+            $qb
+                ->andWhere('t.author = :term OR t.title = :term OR t.content = :term')
+                ->setParameter('term', $filter);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
      * @return array
      */
     public function findAllAnonymous()

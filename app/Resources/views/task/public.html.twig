@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <header class="mb-3">
+        <h1>
+            {% if app.request.attributes.get('_route') == 'task_public' %}
+            {{ 'task.title.public'|trans }}
+            {% else %}
+            {{ 'task.title.archived'|trans }}
+            {% endif %}
+            ({{ tasks|length }})
+        </h1>
+        <a href="{{ path('task_create') }}" class="btn btn-info">
+            <span class="fas fa-plus-circle" aria-hidden="true"></span> {{ 'task.create.title'|trans }}
+        </a>
+        {% if app.request.attributes.get('_route') == 'task_public' %}
+            <a href="{{ path('task_public_archived') }}" class="btn btn-info">
+                <span class="fas fa-archive" aria-hidden="true"></span> See archived tasks
+            </a>
+        {% else %}
+            <a href="{{ path('task_public') }}" class="btn btn-info">
+                <span class="fas fa-list" aria-hidden="true"></span> See ongoing tasks
+            </a>
+        {% endif %}
+    </header>
+    {% for row in tasks|batch(4) %}
+    <div class="card-deck mb-3">
+        {% for task in row %}
+        <article class="card">
+            <header class="card-header">
+                <div class="float-right">
+                {% if task.isDone %}
+                    <span class="fas fa-check-circle text-success" aria-hidden="true"></span>
+                {% else %}
+                    <span class="fas fa-question-circle text-primary" aria-hidden="true"></span>
+                {% endif %}
+                </div>
+                <h4 class="card-title mb-0">
+                    <a href="{{ path('task_edit', {'id' : task.id }) }}">{{ task.title }}</a>
+                </h4>
+            </header>
+            <section class="card-body">
+                {{ task.content }}
+            </section>
+            <footer class="card-footer">
+                <small>{{ 'task.author.created'|trans }} {% if task.author %}{{ task.author.username }}{% else %}{{ 'task.author.anonymous'|trans }}{% endif %}</small>
+                <form action="{{ path('task_toggle', {'id' : task.id }) }}">
+                    <button class="btn btn-success btn-sm pull-right">
+                        {% if not task.isDone %}
+                            <span class="fas fa-thumbs-up" aria-hidden="true"></span> {{ 'task.done.title'|trans }}
+                        {% else %}
+                            <span class="fas fa-thumbs-down" aria-hidden="true"></span> {{ 'task.undone.title'|trans }}
+                        {% endif %}
+                    </button>
+                </form>
+                <form action="{{ path('task_delete', {'id' : task.id }) }}">
+                    <button class="btn btn-danger btn-sm pull-right">
+                        <span class="fas fa-trash" aria-hidden="true"></span> {{ 'button.delete'|trans }}
+                    </button>
+                </form>
+            </footer>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-warning" role="alert">
+        {{ 'task.empty'|trans }}
+    </div>
+    {% endfor %}
+{% endblock %}

@@ -1,6 +1,7 @@
 home:
     nav:
         tasks: Mes tâches
+        public: Tâches publique
         profile: Mon compte
         dashboard: Dashboard
 
@@ -26,8 +27,11 @@ user:
     role_user: Utilisateur
 
 task:
+    title:
+        public: Toutes les tâches publique
+        archived: Toutes les tâches publique archivées
     create:
-        title: Créér une tâche
+        title: Ajouter une tâche
         success: La tâche a bien été ajoutée !
     update:
         success: La tâche a bien été modifiée.
