@@ -42,11 +42,13 @@ final class UserHandler
      * @param FormInterface $form
      * @return User
      */
-    public function create(FormInterface $form): User
+    public function createUserFromForm(FormInterface $form): User
     {
         $user = $form->getData();
         $user->setPassword($this->passwordEncoder->encodePassword($user, $form->get('plainPassword')->getData()));
-        $user->setRoles([User::ROLE_USER]);
+        if (!$form->has('roles')) {
+            $user->setRoles(User::ROLE_USER);
+        }
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
@@ -92,7 +94,7 @@ final class UserHandler
         $user->setUsername($data['username']);
         $user->setPassword($this->passwordEncoder->encodePassword($user, $data['password']));
         $user->setEmail($data['email']);
-        $user->setRoles([$data['roles'] ?? User::ROLE_USER]);
+        $user->setRoles($data['roles'] ?? User::ROLE_USER);
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();

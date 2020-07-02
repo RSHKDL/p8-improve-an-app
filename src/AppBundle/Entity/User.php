@@ -122,19 +122,23 @@ class User implements UserInterface
     }
 
     /**
-     * @return array
+     * @return array|null
      */
-    public function getRoles(): array
+    public function getRoles(): ?array
     {
         return $this->roles;
     }
 
     /**
-     * @param array $roles
+     * @param mixed $role
      */
-    public function setRoles(array $roles)
+    public function setRoles($role)
     {
-        $this->roles = $roles;
+        if (is_array($role)) {
+            $this->roles = array_replace($this->roles, $role);
+        } else {
+            $this->roles[] = $role;
+        }
     }
 
     /**

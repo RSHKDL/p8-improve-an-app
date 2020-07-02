@@ -46,7 +46,17 @@ class UserType extends AbstractType
             ])
         ;
 
-        if($isFromAdmin && !$isNewUser) {
+        if ($isFromAdmin && $isNewUser) {
+            $builder->add('roles', ChoiceType::class, [
+                'label' => 'form.user.role',
+                'choices' => [
+                    'user.role_admin' => User::ROLE_ADMIN,
+                    'user.role_user' => User::ROLE_USER
+                ]
+            ]);
+        }
+
+        if ($isFromAdmin && !$isNewUser && !$editSelf) {
             $builder->add('roles', CollectionType::class, [
                 'label' => 'form.user.role',
                 'entry_type' => ChoiceType::class,
@@ -58,31 +68,9 @@ class UserType extends AbstractType
                     'label' => false
                 ]
             ]);
+            // admin should not change user password. Add a reset forgotten password service instead.
+            $builder->remove('plainPassword');
         }
-
-        //@todo admin should not change user password. Add a reset forgotten password service instead.
-        /*if($isFromAdmin && !$editSelf) {
-            $builder->remove('password');
-        }*/
-
-        if($isFromAdmin && $isNewUser) {
-            $builder->add('roles', ChoiceType::class, [
-                'label' => 'form.user.role',
-                'choices' => [
-                    'user.role_admin' => User::ROLE_ADMIN,
-                    'user.role_user' => User::ROLE_USER
-                ]
-            ]);
-        }
-
-        /*->add('password', RepeatedType::class, [
-                'type' => PasswordType::class,
-                'invalid_message' => 'form.user.password_mismatch',
-                'required' => !$isFromAdmin,
-                'first_options'  => ['label' => 'form.user.password'],
-                'second_options' => ['label' => 'form.user.password_repeat'],
-            ])*/
-
     }
 
     /**

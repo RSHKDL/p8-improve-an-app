@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\User;
 use AppBundle\Form\UserType;
 use AppBundle\Handler\UserHandler;
+use AppBundle\Repository\UserRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -25,16 +26,24 @@ class UserController extends Controller
     private $userHandler;
 
     /**
+     * @var UserRepository
+     */
+    private $userRepository;
+
+    /**
      * UserController constructor.
      * @param TranslatorInterface $translator
      * @param UserHandler $userHandler
+     * @param UserRepository $userRepository
      */
     public function __construct(
         TranslatorInterface $translator,
-        UserHandler $userHandler
+        UserHandler $userHandler,
+        UserRepository $userRepository
     ) {
         $this->translator = $translator;
         $this->userHandler = $userHandler;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -43,7 +52,7 @@ class UserController extends Controller
     public function listAction()
     {
         $this->denyAccessUnlessGranted(User::ROLE_ADMIN);
-        $nonAdminUsers = $this->getDoctrine()->getRepository('AppBundle:User')->findAllNonAdmin();
+        $nonAdminUsers = $this->userRepository->findAllNonAdmin();
 
         return $this->render('user/list.html.twig',
             [
@@ -72,7 +81,7 @@ class UserController extends Controller
     public function createAction(Request $request)
     {
         $this->denyAccessUnlessGranted(User::ROLE_ADMIN);
-        $form = $this->createForm(UserType::class, [], [
+        $form = $this->createForm(UserType::class, null, [
             'isFromAdmin' => true,
             'isNewUser' => true,
             'editSelf' => false
@@ -80,7 +89,7 @@ class UserController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $this->userHandler->create($form->getData());
+            $user = $this->userHandler->createUserFromForm($form);
             $this->addFlash(
                 'success',
                 $this->translator->trans('user.create.success', ['%name' => $user->getUsername()]));

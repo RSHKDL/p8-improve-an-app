@@ -58,10 +58,10 @@ class UserControllerTest extends BaseControllerTest
         $this->assertContains('han_solo@rebel.com', $this->client->getResponse()->getContent());
 
         $form = $crawler->selectButton('Modifier')->form();
-        $form['user[email]']->setValue('chewbaca@rebel.org');
+        $form['user[email]']->setValue('chewbacca@rebel.org');
         $crawler = $this->client->submit($form);
         $this->assertGreaterThan(0, $crawler->filter('html:contains("han_solo")')->count());
-        $this->assertContains('chewbaca@rebel.org', $this->client->getResponse()->getContent());
+        $this->assertContains('chewbacca@rebel.org', $this->client->getResponse()->getContent());
     }
 
     public function testAdminCanEditAllUsers()
@@ -73,10 +73,10 @@ class UserControllerTest extends BaseControllerTest
         $this->assertContains('luke_skywalker@rebel.com', $this->client->getResponse()->getContent());
 
         $form = $crawler->selectButton('Modifier')->form();
-        $form['user[email]']->setValue('chewbaca@rebel.org');
-        $form['user[roles]'] = [User::ROLE_ADMIN];
+        $form['user[email]']->setValue('chewbacca@rebel.org');
+        $form['user[roles][0]']->setValue(User::ROLE_ADMIN);
         $this->client->submit($form);
-        $this->assertContains('chewbaca@rebel.org', $this->client->getResponse()->getContent());
+        $this->assertContains('chewbacca@rebel.org', $this->client->getResponse()->getContent());
 
         $crawler = $this->client->request('GET', '/users');
         $this->assertEquals(2, $crawler->filter('td:contains("Administrateur")')->count());

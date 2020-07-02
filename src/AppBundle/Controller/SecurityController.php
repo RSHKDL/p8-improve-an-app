@@ -70,7 +70,7 @@ class SecurityController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $this->userHandler->create($form);
+            $user = $this->userHandler->createUserFromForm($form);
 
             $this->addFlash(
                 'success',

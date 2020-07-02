@@ -16,7 +16,7 @@ class UserTest extends TestCase
     public function testAdminUser()
     {
         $user = new User();
-        $user->setRoles([User::ROLE_ADMIN]);
+        $user->setRoles(User::ROLE_ADMIN);
 
         $this->assertInstanceOf(UserInterface::class, $user);
         $this->assertInternalType('bool', $user->isAdmin());

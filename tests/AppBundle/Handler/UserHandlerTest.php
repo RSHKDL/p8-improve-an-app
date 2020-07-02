@@ -37,17 +37,22 @@ class UserHandlerTest extends TestCase
         $this->userHandler = new UserHandler($this->mockEntityManager, $this->mockPasswordEncoder);
     }
 
+    public function testCreate()
+    {
+        $this->markTestSkipped();
+    }
+
     /**
      * @dataProvider getCreateData
      * @param array $data
      * @param bool $mustFail
      */
-    public function testCreate(array $data, $mustFail = false)
+    public function testCreateUserFromArray(array $data, $mustFail = false)
     {
         $this->mockEntityManager->expects($this->once())->method('persist')->with($this->isInstanceOf(User::class));
         $this->mockEntityManager->expects($this->atLeastOnce())->method('flush');
 
-        $user = $this->userHandler->create($data);
+        $user = $this->userHandler->createUserFromArray($data);
         if (!$mustFail) {
             $this->assertInstanceOf(User::class, $user);
             $this->assertInternalType('string', $user->getUsername());
