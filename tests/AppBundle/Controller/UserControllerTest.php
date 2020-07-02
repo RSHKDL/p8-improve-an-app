@@ -97,11 +97,10 @@ class UserControllerTest extends BaseControllerTest
         $this->assertNotContains('luke_skywalker', $this->client->getResponse()->getContent());
     }
 
-    /**
-     * @todo test skipped because feature not implemented yet
-     */
     public function testAdminCannotDeleteSelf()
     {
-        $this->markTestSkipped('Should be implemented and tested');
+        $this->logIn($this->client, $this->fetchHanSoloOrAdmin(true));
+        $this->client->request('GET', '/users/3/delete');
+        $this->assertEquals(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
     }
 }
