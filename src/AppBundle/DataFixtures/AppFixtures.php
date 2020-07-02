@@ -67,9 +67,9 @@ class AppFixtures extends Fixture
             'email' => self::DARTH_VADER.'@empire.com',
             'roles' => User::ROLE_ADMIN
         ];
-        $hanSolo = $this->userHandler->create($userOneData);
-        $lukeSkywalker = $this->userHandler->create($userTwoData);
-        $this->userHandler->create($adminData);
+        $hanSolo = $this->userHandler->createUserFromArray($userOneData);
+        $lukeSkywalker = $this->userHandler->createUserFromArray($userTwoData);
+        $this->userHandler->createUserFromArray($adminData);
 
         $taskOneData = [
             'title' => 'Some title',

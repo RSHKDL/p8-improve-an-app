@@ -61,16 +61,16 @@ class SecurityController extends Controller
      */
     public function register(Request $request)
     {
-        $form = $this->createForm(UserType::class, [], [
+        $form = $this->createForm(UserType::class, null, [
             'isFromAdmin' => false,
             'isNewUser' => true,
-            'editSelf' => true
+            'editSelf' => false
         ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $this->userHandler->create($form->getData());
+            $user = $this->userHandler->create($form);
 
             $this->addFlash(
                 'success',

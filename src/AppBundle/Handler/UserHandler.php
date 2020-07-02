@@ -5,6 +5,7 @@ namespace AppBundle\Handler;
 
 use AppBundle\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
@@ -38,16 +39,14 @@ final class UserHandler
 
     /**
      * @todo Send a mail to the newly created user with his credentials
-     * @param array $data
+     * @param FormInterface $form
      * @return User
      */
-    public function create(array $data): User
+    public function create(FormInterface $form): User
     {
-        $user = new User();
-        $user->setUsername($data['username']);
-        $user->setPassword($this->passwordEncoder->encodePassword($user, $data['password']));
-        $user->setEmail($data['email']);
-        $user->setRoles([$data['roles'] ?? User::ROLE_USER]);
+        $user = $form->getData();
+        $user->setPassword($this->passwordEncoder->encodePassword($user, $form->get('plainPassword')->getData()));
+        $user->setRoles([User::ROLE_USER]);
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
@@ -81,5 +80,23 @@ final class UserHandler
         }
         $this->entityManager->remove($user);
         $this->entityManager->flush();
+    }
+
+    /**
+     * @param array $data
+     * @return User
+     */
+    public function createUserFromArray(array $data): User
+    {
+        $user = new User();
+        $user->setUsername($data['username']);
+        $user->setPassword($this->passwordEncoder->encodePassword($user, $data['password']));
+        $user->setEmail($data['email']);
+        $user->setRoles([$data['roles'] ?? User::ROLE_USER]);
+
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+
+        return $user;
     }
 }

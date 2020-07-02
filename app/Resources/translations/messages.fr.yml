@@ -76,6 +76,5 @@ form:
         username: Nom d'utilisateur
         password: Votre mot de passe
         password_repeat: Taper à nouveau votre mot de passe
-        password_missmatch: Les deux mots de passe doivent correspondre
         email: Votre courriel
         role: Rôle de l'utilisateur

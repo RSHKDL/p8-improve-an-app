@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserType extends AbstractType
 {
@@ -29,15 +30,19 @@ class UserType extends AbstractType
             ->add('username', TextType::class, [
                 'label' => 'form.user.username'
             ])
-            ->add('password', RepeatedType::class, [
-                'type' => PasswordType::class,
-                'invalid_message' => 'form.user.password_mismatch',
-                'required' => !$isFromAdmin,
-                'first_options'  => ['label' => 'form.user.password'],
-                'second_options' => ['label' => 'form.user.password_repeat'],
-            ])
             ->add('email', EmailType::class, [
                 'label' => 'form.user.email'
+            ])
+            ->add('plainPassword', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'invalid_message' => 'user.password.mismatch',
+                'mapped' => false,
+                'required' => true,
+                'first_options'  => ['label' => 'form.user.password'],
+                'second_options' => ['label' => 'form.user.password_repeat'],
+                'constraints'=> [
+                    new NotBlank(['message' => 'user.password.mandatory'])
+                ]
             ])
         ;
 
@@ -56,9 +61,9 @@ class UserType extends AbstractType
         }
 
         //@todo admin should not change user password. Add a reset forgotten password service instead.
-        if($isFromAdmin && !$editSelf) {
+        /*if($isFromAdmin && !$editSelf) {
             $builder->remove('password');
-        }
+        }*/
 
         if($isFromAdmin && $isNewUser) {
             $builder->add('roles', ChoiceType::class, [
@@ -70,6 +75,14 @@ class UserType extends AbstractType
             ]);
         }
 
+        /*->add('password', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'invalid_message' => 'form.user.password_mismatch',
+                'required' => !$isFromAdmin,
+                'first_options'  => ['label' => 'form.user.password'],
+                'second_options' => ['label' => 'form.user.password_repeat'],
+            ])*/
+
     }
 
     /**
@@ -77,6 +90,9 @@ class UserType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
+        $resolver->setDefaults([
+            'data_class' => User::class
+        ]);
         $resolver->setRequired(['isFromAdmin', 'isNewUser', 'editSelf']);
     }
 }

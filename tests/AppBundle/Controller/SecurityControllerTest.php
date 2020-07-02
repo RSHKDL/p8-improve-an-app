@@ -20,8 +20,8 @@ class SecurityControllerTest extends BaseControllerTest
 
         $form = $crawler->selectButton('S\'inscrire')->form();
         $form['user[username]']->setValue('chewbacca');
-        $form['user[password][first]']->setValue('1234');
-        $form['user[password][second]']->setValue('1234');
+        $form['user[plainPassword][first]']->setValue('1234');
+        $form['user[plainPassword][second]']->setValue('1234');
         $form['user[email]']->setValue('chewbacca@rebel.com');
         $crawler = $this->client->submit($form);
         $this->assertContains('Superbe !', $this->client->getResponse()->getContent());
@@ -34,21 +34,16 @@ class SecurityControllerTest extends BaseControllerTest
         $this->assertContains('Se déconnecter', $this->client->getResponse()->getContent());
     }
 
-    /**
-     * @todo test skipped because custom duplicate validator is missing
-     */
     public function testCannotRegisterUserWithSameEmail()
     {
-        $this->markTestSkipped('Must setup a custom duplicate validator');
-
         $crawler = $this->client->request('GET', '/register');
         $form = $crawler->selectButton('S\'inscrire')->form();
         $form['user[username]']->setValue('chewbacca');
-        $form['user[password][first]']->setValue('1234');
-        $form['user[password][second]']->setValue('1234');
+        $form['user[plainPassword][first]']->setValue('1234');
+        $form['user[plainPassword][second]']->setValue('1234');
         $form['user[email]']->setValue('han_solo@rebel.com');
         $this->client->submit($form);
-        $this->assertContains('This email already exist', $this->client->getResponse()->getContent());
+        $this->assertContains('Il semble que vous ayez déjà un compte ici', $this->client->getResponse()->getContent());
     }
 
     public function testLoginWithBadCredentials()
