@@ -2,7 +2,6 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\User;
 use AppBundle\Form\UserType;
 use AppBundle\Handler\UserHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -64,13 +63,14 @@ class SecurityController extends Controller
         $form = $this->createForm(UserType::class, null, [
             'isFromAdmin' => false,
             'isNewUser' => true,
-            'editSelf' => false
+            'editSelf' => false,
+            'validation_groups' => ['registration'],
         ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $this->userHandler->createUserFromForm($form);
+            $user = $this->userHandler->createUserFromDTO($form->getData());
 
             $this->addFlash(
                 'success',

@@ -137,6 +137,7 @@ class User implements UserInterface
         if (is_array($role)) {
             $this->roles = array_replace($this->roles, $role);
         } else {
+            $this->roles = [];
             $this->roles[] = $role;
         }
     }

@@ -2,6 +2,7 @@
 
 namespace Tests\AppBundle\Handler;
 
+use AppBundle\DTO\UserDTO;
 use AppBundle\Entity\User;
 use AppBundle\Handler\UserHandler;
 use Doctrine\ORM\EntityManagerInterface;
@@ -37,11 +38,6 @@ class UserHandlerTest extends TestCase
         $this->userHandler = new UserHandler($this->mockEntityManager, $this->mockPasswordEncoder);
     }
 
-    public function testCreate()
-    {
-        $this->markTestSkipped();
-    }
-
     /**
      * @dataProvider getCreateData
      * @param array $data
@@ -65,17 +61,18 @@ class UserHandlerTest extends TestCase
     /**
      * @dataProvider getUpdateData
      * @param User $user
+     * @param UserDTO $dto
      */
-    public function testUpdate(User $user)
+    public function testUpdate(User $user, UserDTO $dto)
     {
         $this->mockEntityManager->expects($this->atLeastOnce())->method('flush');
 
-        $user = $this->userHandler->update($user);
+        $user = $this->userHandler->update($user, $dto);
         $this->assertInstanceOf(User::class, $user);
     }
 
     /**
-     * @dataProvider getUpdateData
+     * @dataProvider getDeleteData
      * @param User $user
      */
     public function testDelete(User $user)
@@ -103,6 +100,16 @@ class UserHandlerTest extends TestCase
     public function getUpdateData()
     {
         return [
+            '#1 Valid instance' => [$this->provideUser(), $this->provideUserDto()]
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getDeleteData()
+    {
+        return [
             '#1 Valid instance' => [$this->provideUser()]
         ];
     }
@@ -127,5 +134,10 @@ class UserHandlerTest extends TestCase
     private function provideUser(): User
     {
         return new User();
+    }
+
+    private function provideUserDto(): UserDTO
+    {
+        return new UserDTO();
     }
 }

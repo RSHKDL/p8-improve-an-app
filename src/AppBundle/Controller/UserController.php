@@ -84,12 +84,13 @@ class UserController extends Controller
         $form = $this->createForm(UserType::class, null, [
             'isFromAdmin' => true,
             'isNewUser' => true,
-            'editSelf' => false
+            'editSelf' => false,
+            'validation_groups' => ['registration'],
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $this->userHandler->createUserFromForm($form);
+            $user = $this->userHandler->createUserFromDTO($form->getData());
             $this->addFlash(
                 'success',
                 $this->translator->trans('user.create.success', ['%name' => $user->getUsername()]));
@@ -111,16 +112,18 @@ class UserController extends Controller
         $this->denyAccessUnlessGranted('edit', $user);
         /** @var User $currentUser */
         $currentUser = $this->getUser();
+        $dto = $this->userHandler->createUserDtoFromUser($user);
 
-        $form = $this->createForm(UserType::class, $user, [
+        $form = $this->createForm(UserType::class, $dto, [
             'isFromAdmin' => $currentUser->isAdmin(),
             'isNewUser' => false,
-            'editSelf' => $currentUser === $user
+            'editSelf' => $currentUser === $user,
+            'validation_groups' => ['edition']
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $this->userHandler->update($form->getData());
+            $user = $this->userHandler->update($user, $form->getData());
             $this->addFlash('success', $this->translator->trans('user.update.success', ['%name' => $user->getUsername()]));
 
             return in_array(User::ROLE_ADMIN, $currentUser->getRoles(), true) ? $this->redirectToRoute('user_list') : $this->redirectToRoute('user_profile');
