@@ -69,7 +69,7 @@ button:
     
 flash:
     success: Superbe !
-    error: Oops !
+    error: Oups !
 
 form:
     user:
@@ -78,3 +78,8 @@ form:
         password_repeat: Taper à nouveau votre mot de passe
         email: Votre courriel
         role: Rôle de l'utilisateur
+
+error:
+    title: "Oups ! Une erreur est survenue :"
+    message: Désolé, le serveur a retourné l'erreur %code% %text%. Vous pouvez
+    link: retourner sur la page d'accueil.
