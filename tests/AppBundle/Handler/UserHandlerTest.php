@@ -39,7 +39,27 @@ class UserHandlerTest extends TestCase
     }
 
     /**
-     * @dataProvider getCreateData
+     * @dataProvider getCreateDtoData
+     * @param $dto
+     * @param bool $mustFail
+     */
+    public function testCreateUserFromDto($dto, $mustFail = false)
+    {
+        $this->mockEntityManager->expects($this->once())->method('persist')->with($this->isInstanceOf(User::class));
+        $this->mockEntityManager->expects($this->atLeastOnce())->method('flush');
+
+        $user = $this->userHandler->createUserFromDTO($dto);
+        if (!$mustFail) {
+            $this->assertInstanceOf(User::class, $user);
+            $this->assertInternalType('string', $user->getUsername());
+            $this->assertInternalType('string', $user->getEmail());
+        } else {
+            $this->assertTrue(true);
+        }
+    }
+
+    /**
+     * @dataProvider getCreateArrayData
      * @param array $data
      * @param bool $mustFail
      */
@@ -86,11 +106,22 @@ class UserHandlerTest extends TestCase
     /**
      * @return array
      */
-    public function getCreateData()
+    public function getCreateDtoData()
     {
         return [
-            '#1 Valid data' => [$this->provideData()],
-            '#2 Missing email' => [$this->provideData(true), true]
+            '#1 Valid data' => [$this->provideDtoData()],
+            '#2 Missing email' => [$this->provideDtoData(true), true]
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getCreateArrayData()
+    {
+        return [
+            '#1 Valid data' => [$this->provideArrayData()],
+            '#2 Missing email' => [$this->provideArrayData(true), true]
         ];
     }
 
@@ -116,9 +147,23 @@ class UserHandlerTest extends TestCase
 
     /**
      * @param bool $incomplete
+     * @return UserDTO
+     */
+    private function provideDtoData($incomplete = false)
+    {
+        $dto = new UserDTO();
+        $dto->username = 'john';
+        $dto->email = $incomplete === true ? null : 'john@doe.com';
+        $dto->plainPassword = '1234';
+
+        return $dto;
+    }
+
+    /**
+     * @param bool $incomplete
      * @return array
      */
-    private function provideData($incomplete = false)
+    private function provideArrayData($incomplete = false)
     {
         return [
             'username' => 'john',
@@ -136,6 +181,9 @@ class UserHandlerTest extends TestCase
         return new User();
     }
 
+    /**
+     * @return UserDTO
+     */
     private function provideUserDto(): UserDTO
     {
         return new UserDTO();
