@@ -31,11 +31,11 @@ final class TaskHandler
 
     /**
      * @param array $data
-     * @param User $user
+     * @param User|null $user
      * @return Task
      * @throws \Exception
      */
-    public function create(array $data, User $user): Task
+    public function create(array $data, ?User $user): Task
     {
         $task = new Task();
         $task->setTitle($data['title']);

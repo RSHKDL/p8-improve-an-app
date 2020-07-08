@@ -36,29 +36,45 @@ class PurgeTasksCommandTest extends BaseCommandTest
         $command = $this->getApplication()->find('app:purge-tasks');
         $commandTester = new CommandTester($command);
 
+        // test abort
+        $commandTester->setInputs(['No']);
+        $commandTester->execute([
+            'command' => $command->getName(),
+            '--all' => true
+        ]);
+        $output = $commandTester->getDisplay();
+        $this->assertStringContainsString('Purge aborted', $output);
+
+        // test proceed
         $commandTester->setInputs(['Yes']);
         $commandTester->execute([
             'command' => $command->getName(),
             '--all' => true
         ]);
-
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('All tasks purged', $output);
     }
 
-    /**
-     * @todo add anonymous tasks in fixtures
-     */
     public function testPurgeAnonymousTasks(): void
     {
         $command = $this->getApplication()->find('app:purge-tasks');
         $commandTester = new CommandTester($command);
 
-        $commandTester->setInputs(['Yes']);
-        $commandTester->execute([
-            'command' => $command->getName(),
-        ]);
+        // test abort
+        $commandTester->setInputs(['No']);
+        $commandTester->execute(['command' => $command->getName()]);
+        $output = $commandTester->getDisplay();
+        $this->assertStringContainsString('Purge aborted', $output);
 
+        // test proceed
+        $commandTester->setInputs(['Yes']);
+        $commandTester->execute(['command' => $command->getName()]);
+        $output = $commandTester->getDisplay();
+        $this->assertStringContainsString('All anonymous tasks purged', $output);
+
+        // test proceed again
+        $commandTester->setInputs(['Yes']);
+        $commandTester->execute(['command' => $command->getName()]);
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('No anonymous tasks to purge', $output);
     }

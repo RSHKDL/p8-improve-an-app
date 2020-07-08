@@ -81,5 +81,18 @@ class AppFixtures extends Fixture
         ];
         $this->taskHandler->create($taskOneData, $hanSolo);
         $this->taskHandler->create($taskTwoData, $lukeSkywalker);
+
+        $taskOneAnonymous = [
+            'title' => 'I am anonymous',
+            'content' => 'Some content'
+        ];
+
+        $taskTwoAnonymous = [
+            'title' => 'I am anonymous too!',
+            'content' => 'Another content'
+        ];
+
+        $this->taskHandler->create($taskOneAnonymous, null);
+        $this->taskHandler->create($taskTwoAnonymous, null);
     }
 }

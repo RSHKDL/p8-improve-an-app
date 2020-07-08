@@ -44,7 +44,7 @@ final class CreateAdminCommand extends Command
         $this->passwordEncoder = $passwordEncoder;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setDescription('Create an user with admin privileges');
     }
@@ -78,8 +78,9 @@ final class CreateAdminCommand extends Command
     /**
      * @param SymfonyStyle $style
      * @return string
+     * @codeCoverageIgnore
      */
-    private function askAndConfirmPassword(SymfonyStyle $style)
+    private function askAndConfirmPassword(SymfonyStyle $style): string
     {
         $firstPassword = $style->askHidden('password?');
         $secondPassword = $style->askHidden('confirm your password');
