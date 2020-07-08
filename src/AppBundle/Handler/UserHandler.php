@@ -1,6 +1,5 @@
 <?php
 
-
 namespace AppBundle\Handler;
 
 use AppBundle\DTO\UserDTO;
@@ -25,7 +24,7 @@ final class UserHandler
     private $passwordEncoder;
 
     /**
-     * TaskHandler constructor.
+     * UserHandler constructor.
      * @param EntityManagerInterface $entityManager
      * @param UserPasswordEncoderInterface $passwordEncoder
      */

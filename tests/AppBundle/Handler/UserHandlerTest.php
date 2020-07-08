@@ -186,6 +186,9 @@ class UserHandlerTest extends TestCase
      */
     private function provideUserDto(): UserDTO
     {
-        return new UserDTO();
+        $dto = new UserDTO();
+        $dto->plainPassword = '1234';
+
+        return $dto;
     }
 }
