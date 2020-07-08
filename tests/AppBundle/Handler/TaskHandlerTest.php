@@ -25,7 +25,7 @@ class TaskHandlerTest extends TestCase
      */
     private $mockEntityManager;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->mockEntityManager = $this->createMock(EntityManagerInterface::class);
         $this->taskHandler = new TaskHandler($this->mockEntityManager);
@@ -38,7 +38,7 @@ class TaskHandlerTest extends TestCase
      * @param $username
      * @throws \Exception
      */
-    public function testCreateTaskWithValidData($title, $content, $username)
+    public function testCreateTaskWithValidData($title, $content, $username): void
     {
         $this->mockEntityManager->expects($this->once())->method('persist')->with($this->isInstanceOf(Task::class));
         $this->mockEntityManager->expects($this->atLeastOnce())->method('flush');
@@ -54,8 +54,8 @@ class TaskHandlerTest extends TestCase
         $task = $this->taskHandler->create($data, $user);
         $this->assertInstanceOf(Task::class, $task);
         $this->assertInstanceOf(User::class, $task->getAuthor());
-        $this->assertInternalType('string', $task->getTitle());
-        $this->assertInternalType('string', $task->getContent());
+        $this->assertIsString($task->getTitle());
+        $this->assertIsString($task->getContent());
         $this->assertSame($title, $task->getTitle(), "title don't match");
         $this->assertSame($content, $task->getContent(), "content don't match");
         $this->assertSame($username, $task->getAuthor()->getUsername(), "username don't match");
@@ -64,7 +64,7 @@ class TaskHandlerTest extends TestCase
     /**
      * @return array
      */
-    public function getTasks()
+    public function getTasks(): array
     {
         return [
             'Task #1' => ['Homework', 'Do my homework', 'Bob'],

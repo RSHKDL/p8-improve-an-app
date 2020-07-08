@@ -4,6 +4,7 @@ namespace Tests\AppBundle\Security\Voter;
 
 use AppBundle\Entity\User;
 use AppBundle\Security\Voter\UserVoter;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -21,7 +22,7 @@ class UserVoterTest extends TestCase
      * @param User|null $userToCheckAgainst
      * @param int $expected
      */
-    public function testVote(?User $userLoggedIn, ?User $userToCheckAgainst, $expected)
+    public function testVote(?User $userLoggedIn, ?User $userToCheckAgainst, int $expected): void
     {
         $token = new AnonymousToken('secret', 'anonymous');
 
@@ -39,7 +40,7 @@ class UserVoterTest extends TestCase
      * @return array
      * @throws \Exception
      */
-    public function voterProvider()
+    public function voterProvider(): array
     {
         $user = $this->createMockUser(true, false);
         $otherUser = $this->createMockUser(false, false);
@@ -57,9 +58,9 @@ class UserVoterTest extends TestCase
     /**
      * @param bool $isSame
      * @param bool $isAdmin
-     * @return \PHPUnit\Framework\MockObject\MockObject
+     * @return MockObject
      */
-    private function createMockUser($isSame, $isAdmin)
+    private function createMockUser(bool $isSame, bool $isAdmin): MockObject
     {
         $user = $this->createMock(User::class);
         if ($isSame) {

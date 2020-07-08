@@ -5,6 +5,7 @@ namespace Tests\AppBundle\Security\Voter;
 use AppBundle\Entity\Task;
 use AppBundle\Entity\User;
 use AppBundle\Security\Voter\TaskVoter;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -24,7 +25,7 @@ class TaskVoterTest extends TestCase
      * @param int $expected
      * @throws \Exception
      */
-    public function testVote(?User $user, $isAuthor, $expected)
+    public function testVote(?User $user, bool $isAuthor, int $expected): void
     {
         /*
          * Mocking the token is a pain in the ass.
@@ -55,7 +56,7 @@ class TaskVoterTest extends TestCase
      * @return array
      * @throws \Exception
      */
-    public function voterProvider()
+    public function voterProvider(): array
     {
         return [
             // $user, isAuthor, expected
@@ -65,10 +66,7 @@ class TaskVoterTest extends TestCase
         ];
     }
 
-    /**
-     * @return \PHPUnit\Framework\MockObject\MockObject
-     */
-    private function createMockUser()
+    private function createMockUser(): MockObject
     {
         $user = $this->createMock(User::class);
         $user->method('getId')->willReturn(1);

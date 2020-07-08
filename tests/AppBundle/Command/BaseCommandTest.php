@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\NullOutput;
  */
 class BaseCommandTest extends KernelTestCase
 {
-    public function testThisIsNotATest()
+    public function testThisIsNotATest(): void
     {
         $this->assertTrue(true);
     }
@@ -22,7 +22,7 @@ class BaseCommandTest extends KernelTestCase
     /**
      * @return Application
      */
-    protected function getApplication()
+    protected function getApplication(): Application
     {
         $kernel = static::createKernel();
         $application = new Application($kernel);
@@ -35,7 +35,7 @@ class BaseCommandTest extends KernelTestCase
      * @param Application $application
      * @throws \Exception
      */
-    protected function createDatabaseAndSchema(Application $application)
+    protected function createDatabaseAndSchema(Application $application): void
     {
         $input = new ArrayInput(array(
             'command' => 'doctrine:database:create',
@@ -60,7 +60,7 @@ class BaseCommandTest extends KernelTestCase
      * @param Application $application
      * @throws \Exception
      */
-    protected function loadFixtures(Application $application)
+    protected function loadFixtures(Application $application): void
     {
         $input = new ArrayInput(array(
             'command' => 'doctrine:fixtures:load',
@@ -76,7 +76,7 @@ class BaseCommandTest extends KernelTestCase
      * @param Application $application
      * @throws \Exception
      */
-    protected function dropDatabase(Application $application)
+    protected function dropDatabase(Application $application): void
     {
         $input = new ArrayInput(array(
             'command' => 'doctrine:database:drop',

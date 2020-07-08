@@ -31,7 +31,7 @@ class UserHandlerTest extends TestCase
      */
     private $mockPasswordEncoder;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->mockEntityManager = $this->createMock(EntityManagerInterface::class);
         $this->mockPasswordEncoder = $this->createMock(UserPasswordEncoderInterface::class);
@@ -40,10 +40,10 @@ class UserHandlerTest extends TestCase
 
     /**
      * @dataProvider getCreateDtoData
-     * @param $dto
+     * @param UserDTO $dto
      * @param bool $mustFail
      */
-    public function testCreateUserFromDto($dto, $mustFail = false)
+    public function testCreateUserFromDto(UserDTO $dto, bool $mustFail = false): void
     {
         $this->mockEntityManager->expects($this->once())->method('persist')->with($this->isInstanceOf(User::class));
         $this->mockEntityManager->expects($this->atLeastOnce())->method('flush');
@@ -51,8 +51,8 @@ class UserHandlerTest extends TestCase
         $user = $this->userHandler->createUserFromDTO($dto);
         if (!$mustFail) {
             $this->assertInstanceOf(User::class, $user);
-            $this->assertInternalType('string', $user->getUsername());
-            $this->assertInternalType('string', $user->getEmail());
+            $this->assertIsString($user->getUsername());
+            $this->assertIsString($user->getEmail());
         } else {
             $this->assertTrue(true);
         }
@@ -63,7 +63,7 @@ class UserHandlerTest extends TestCase
      * @param array $data
      * @param bool $mustFail
      */
-    public function testCreateUserFromArray(array $data, $mustFail = false)
+    public function testCreateUserFromArray(array $data, $mustFail = false): void
     {
         $this->mockEntityManager->expects($this->once())->method('persist')->with($this->isInstanceOf(User::class));
         $this->mockEntityManager->expects($this->atLeastOnce())->method('flush');
@@ -71,8 +71,8 @@ class UserHandlerTest extends TestCase
         $user = $this->userHandler->createUserFromArray($data);
         if (!$mustFail) {
             $this->assertInstanceOf(User::class, $user);
-            $this->assertInternalType('string', $user->getUsername());
-            $this->assertInternalType('string', $user->getEmail());
+            $this->assertIsString($user->getUsername());
+            $this->assertIsString($user->getEmail());
         } else {
             $this->assertTrue(true);
         }
@@ -83,7 +83,7 @@ class UserHandlerTest extends TestCase
      * @param User $user
      * @param UserDTO $dto
      */
-    public function testUpdate(User $user, UserDTO $dto)
+    public function testUpdate(User $user, UserDTO $dto): void
     {
         $this->mockEntityManager->expects($this->atLeastOnce())->method('flush');
 
@@ -95,7 +95,7 @@ class UserHandlerTest extends TestCase
      * @dataProvider getDeleteData
      * @param User $user
      */
-    public function testDelete(User $user)
+    public function testDelete(User $user): void
     {
         $this->mockEntityManager->expects($this->once())->method('remove')->with($this->isInstanceOf(User::class));
         $this->mockEntityManager->expects($this->atLeastOnce())->method('flush');
@@ -103,10 +103,7 @@ class UserHandlerTest extends TestCase
         $this->userHandler->delete($user);
     }
 
-    /**
-     * @return array
-     */
-    public function getCreateDtoData()
+    public function getCreateDtoData(): array
     {
         return [
             '#1 Valid data' => [$this->provideDtoData()],
@@ -114,10 +111,7 @@ class UserHandlerTest extends TestCase
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function getCreateArrayData()
+    public function getCreateArrayData(): array
     {
         return [
             '#1 Valid data' => [$this->provideArrayData()],
@@ -125,31 +119,21 @@ class UserHandlerTest extends TestCase
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function getUpdateData()
+    public function getUpdateData(): array
     {
         return [
             '#1 Valid instance' => [$this->provideUser(), $this->provideUserDto()]
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function getDeleteData()
+    public function getDeleteData(): array
     {
         return [
             '#1 Valid instance' => [$this->provideUser()]
         ];
     }
 
-    /**
-     * @param bool $incomplete
-     * @return UserDTO
-     */
-    private function provideDtoData($incomplete = false)
+    private function provideDtoData(bool $incomplete = false): UserDTO
     {
         $dto = new UserDTO();
         $dto->username = 'john';
@@ -159,11 +143,7 @@ class UserHandlerTest extends TestCase
         return $dto;
     }
 
-    /**
-     * @param bool $incomplete
-     * @return array
-     */
-    private function provideArrayData($incomplete = false)
+    private function provideArrayData(bool $incomplete = false): array
     {
         return [
             'username' => 'john',
@@ -173,17 +153,11 @@ class UserHandlerTest extends TestCase
         ];
     }
 
-    /**
-     * @return User
-     */
     private function provideUser(): User
     {
         return new User();
     }
 
-    /**
-     * @return UserDTO
-     */
     private function provideUserDto(): UserDTO
     {
         $dto = new UserDTO();

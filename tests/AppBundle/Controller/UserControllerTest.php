@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class UserControllerTest extends BaseControllerTest
 {
-    public function testOnlyAdminCanSeeUserList()
+    public function testOnlyAdminCanSeeUserList(): void
     {
         $this->logIn($this->client, $this->fetchHanSoloOrAdmin());
         $this->client->request('GET', '/users');
@@ -22,7 +22,7 @@ class UserControllerTest extends BaseControllerTest
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
     }
 
-    public function testOnlyLoggedInUsersCanSeeTheirProfile()
+    public function testOnlyLoggedInUsersCanSeeTheirProfile(): void
     {
         $this->client->request('GET', '/profile');
         $this->assertTrue($this->client->getResponse()->isRedirect());
@@ -30,11 +30,11 @@ class UserControllerTest extends BaseControllerTest
         $this->logIn($this->client, $this->fetchHanSoloOrAdmin());
         $this->client->request('GET', '/profile');
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-        $this->assertContains('Votre profil', $this->client->getResponse()->getContent());
-        $this->assertContains('han_solo', $this->client->getResponse()->getContent());
+        $this->assertStringContainsString('Votre profil', $this->client->getResponse()->getContent());
+        $this->assertStringContainsString('han_solo', $this->client->getResponse()->getContent());
     }
 
-    public function testOnlyAdminCanCreateNewUsers()
+    public function testOnlyAdminCanCreateNewUsers(): void
     {
         $this->logIn($this->client, $this->fetchHanSoloOrAdmin());
         $this->client->request('GET', '/users/create');
@@ -45,7 +45,7 @@ class UserControllerTest extends BaseControllerTest
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
     }
 
-    public function testUserCanEditSelf()
+    public function testUserCanEditSelf(): void
     {
         $this->logIn($this->client, $this->fetchHanSoloOrAdmin());
         $this->client->request('GET', '/users/2/edit');
@@ -55,34 +55,34 @@ class UserControllerTest extends BaseControllerTest
         $this->logIn($this->client, $this->fetchHanSoloOrAdmin());
         $crawler = $this->client->request('GET', '/users/1/edit');
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-        $this->assertContains('han_solo@rebel.com', $this->client->getResponse()->getContent());
+        $this->assertStringContainsString('han_solo@rebel.com', $this->client->getResponse()->getContent());
 
         $form = $crawler->selectButton('Modifier')->form();
         $form['user[email]']->setValue('chewbacca@rebel.org');
         $crawler = $this->client->submit($form);
         $this->assertGreaterThan(0, $crawler->filter('html:contains("han_solo")')->count());
-        $this->assertContains('chewbacca@rebel.org', $this->client->getResponse()->getContent());
+        $this->assertStringContainsString('chewbacca@rebel.org', $this->client->getResponse()->getContent());
     }
 
-    public function testAdminCanEditAllUsers()
+    public function testAdminCanEditAllUsers(): void
     {
         $this->client->followRedirects();
         $this->logIn($this->client, $this->fetchHanSoloOrAdmin(true));
         $crawler = $this->client->request('GET', '/users/2/edit');
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-        $this->assertContains('luke_skywalker@rebel.com', $this->client->getResponse()->getContent());
+        $this->assertStringContainsString('luke_skywalker@rebel.com', $this->client->getResponse()->getContent());
 
         $form = $crawler->selectButton('Modifier')->form();
         $form['user[email]']->setValue('chewbacca@rebel.org');
         $form['user[roles][0]']->setValue(User::ROLE_ADMIN);
         $this->client->submit($form);
-        $this->assertContains('chewbacca@rebel.org', $this->client->getResponse()->getContent());
+        $this->assertStringContainsString('chewbacca@rebel.org', $this->client->getResponse()->getContent());
 
         $crawler = $this->client->request('GET', '/users');
         $this->assertEquals(2, $crawler->filter('td:contains("Administrateur")')->count());
     }
 
-    public function testOnlyAdminCanDeleteAllUsers()
+    public function testOnlyAdminCanDeleteAllUsers(): void
     {
         $this->logIn($this->client, $this->fetchHanSoloOrAdmin());
         $this->client->request('GET', '/users/2/delete');
@@ -92,12 +92,12 @@ class UserControllerTest extends BaseControllerTest
         $this->logIn($this->client, $this->fetchHanSoloOrAdmin(true));
         $this->client->request('GET', '/users/1/delete');
         $this->client->request('GET', '/users/2/delete');
-        $this->assertContains('darth_vader', $this->client->getResponse()->getContent());
-        $this->assertNotContains('han_solo', $this->client->getResponse()->getContent());
-        $this->assertNotContains('luke_skywalker', $this->client->getResponse()->getContent());
+        $this->assertStringContainsString('darth_vader', $this->client->getResponse()->getContent());
+        $this->assertStringNotContainsString('han_solo', $this->client->getResponse()->getContent());
+        $this->assertStringNotContainsString('luke_skywalker', $this->client->getResponse()->getContent());
     }
 
-    public function testAdminCannotDeleteSelf()
+    public function testAdminCannotDeleteSelf(): void
     {
         $this->logIn($this->client, $this->fetchHanSoloOrAdmin(true));
         $this->client->request('GET', '/users/3/delete');

@@ -16,7 +16,7 @@ class TaskTest extends TestCase
     /**
      * @throws \Exception
      */
-    public function testSetAuthor()
+    public function testSetAuthor(): void
     {
         $task = new Task();
         $author = new User();
@@ -30,7 +30,7 @@ class TaskTest extends TestCase
     /**
      * @throws \Exception
      */
-    public function testIsDone()
+    public function testIsDone(): void
     {
         $task = new Task();
 
@@ -44,7 +44,7 @@ class TaskTest extends TestCase
     /**
      * @throws \Exception
      */
-    public function testSetCreatedAt()
+    public function testSetCreatedAt(): void
     {
         $task = new Task();
 

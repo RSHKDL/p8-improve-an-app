@@ -27,7 +27,7 @@ class BaseControllerTest extends WebTestCase
     /**
      * @throws \Exception
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->client = static::createClient();
         $application = $this->getApplication();
@@ -38,13 +38,13 @@ class BaseControllerTest extends WebTestCase
     /**
      * @throws \Exception
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $application = $this->getApplication();
         $this->dropDatabase($application);
     }
 
-    public function testThisIsNotATest()
+    public function testThisIsNotATest(): void
     {
         $this->assertTrue(true);
     }
@@ -53,7 +53,7 @@ class BaseControllerTest extends WebTestCase
      * @param Client $client
      * @param User $user
      */
-    protected function logIn(Client $client, User $user)
+    protected function logIn(Client $client, User $user): void
     {
         $session = $client->getContainer()->get('session');
         $firewallName = 'main';
@@ -70,7 +70,7 @@ class BaseControllerTest extends WebTestCase
      * @param bool $isAdmin
      * @return User
      */
-    protected function fetchHanSoloOrAdmin($isAdmin = false)
+    protected function fetchHanSoloOrAdmin($isAdmin = false): User
     {
         $username = $isAdmin ? AppFixtures::DARTH_VADER : AppFixtures::HAN_SOLO;
 
@@ -85,7 +85,7 @@ class BaseControllerTest extends WebTestCase
     /**
      * @return Application
      */
-    private function getApplication()
+    private function getApplication(): Application
     {
         $application = new Application($this->client->getKernel());
         $application->setAutoExit(false);
@@ -97,7 +97,7 @@ class BaseControllerTest extends WebTestCase
      * @param Application $application
      * @throws \Exception
      */
-    private function dropDatabase(Application $application)
+    private function dropDatabase(Application $application): void
     {
         $input = new ArrayInput(array(
             'command' => 'doctrine:database:drop',
@@ -114,7 +114,7 @@ class BaseControllerTest extends WebTestCase
      * @param Application $application
      * @throws \Exception
      */
-    private function createDatabaseAndSchema(Application $application)
+    private function createDatabaseAndSchema(Application $application): void
     {
         $input = new ArrayInput(array(
             'command' => 'doctrine:database:create',
@@ -139,7 +139,7 @@ class BaseControllerTest extends WebTestCase
      * @param Application $application
      * @throws \Exception
      */
-    private function loadFixtures(Application $application)
+    private function loadFixtures(Application $application): void
     {
         $input = new ArrayInput(array(
             'command' => 'doctrine:fixtures:load',

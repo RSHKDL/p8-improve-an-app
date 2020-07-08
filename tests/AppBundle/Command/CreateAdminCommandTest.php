@@ -14,7 +14,7 @@ class CreateAdminCommandTest extends BaseCommandTest
     /**
      * @throws \Exception
      */
-    public function setUp()
+    public function setUp(): void
     {
         $application = $this->getApplication();
         $this->createDatabaseAndSchema($application);
@@ -23,13 +23,13 @@ class CreateAdminCommandTest extends BaseCommandTest
     /**
      * @throws \Exception
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $application = $this->getApplication();
         $this->dropDatabase($application);
     }
 
-    public function testExecute()
+    public function testExecute(): void
     {
         $command = $this->getApplication()->find('app:create-admin');
         $commandTester = new CommandTester($command);
@@ -46,6 +46,6 @@ class CreateAdminCommandTest extends BaseCommandTest
         ]);
 
         $output = $commandTester->getDisplay();
-        $this->assertContains('Administrator successfully created', $output);
+        $this->assertStringContainsString('Administrator successfully created', $output);
     }
 }
