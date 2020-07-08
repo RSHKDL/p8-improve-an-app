@@ -39,4 +39,21 @@ class UserTest extends TestCase
         $this->assertContains($task1, $user->getTasks());
         $this->assertNotContains($task2, $user->getTasks());
     }
+
+    /**
+     * @throws \Exception
+     */
+    public function testAddAndRemoveTask(): void
+    {
+        $user = new User();
+        $task = new Task();
+
+        $user->addTask($task);
+        $this->assertContains($task, $user->getTasks());
+        $this->assertSame($user, $task->getAuthor());
+
+        $user->removeTask($task);
+        $this->assertNotContains($task, $user->getTasks());
+        $this->assertNull($task->getAuthor());
+    }
 }
