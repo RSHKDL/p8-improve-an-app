@@ -13,16 +13,16 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 final class UserVoter extends Voter
 {
-    const CAN_VIEW = 'view';
-    const CAN_EDIT = 'edit';
-    const CAN_DELETE = 'delete';
+    public const CAN_VIEW = 'view';
+    public const CAN_EDIT = 'edit';
+    public const CAN_DELETE = 'delete';
 
     /**
      * @param string $attribute
      * @param mixed $subject
      * @return bool
      */
-    protected function supports($attribute, $subject)
+    protected function supports($attribute, $subject): bool
     {
         return in_array($attribute, [self::CAN_VIEW, self::CAN_EDIT, self::CAN_DELETE], true)
             && $subject instanceof User;
@@ -34,7 +34,7 @@ final class UserVoter extends Voter
      * @param TokenInterface $token
      * @return bool
      */
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
     {
         /** @var User $currentUser */
         $currentUser = $token->getUser();
@@ -57,35 +57,22 @@ final class UserVoter extends Voter
                 break;
         }
 
-        return false;
+        // @codeCoverageIgnoreStart
+        throw new \LogicException('This code should not be reached!');
+        // @codeCoverageIgnoreEnd
     }
 
-    /**
-     * @param User $currentUser
-     * @param User $user
-     * @return bool
-     */
-    private function canEdit(User $currentUser, User $user)
+    private function canEdit(User $currentUser, User $user): bool
     {
         return $currentUser === $user || in_array(User::ROLE_ADMIN, $currentUser->getRoles(), true);
     }
 
-    /**
-     * @param User $currentUser
-     * @param User $user
-     * @return bool
-     */
-    private function canView(User $currentUser, User $user)
+    private function canView(User $currentUser, User $user): bool
     {
         return $this->canEdit($currentUser, $user);
     }
 
-    /**
-     * @param User $currentUser
-     * @param User $user
-     * @return bool
-     */
-    private function canDelete(User $currentUser, User $user)
+    private function canDelete(User $currentUser, User $user): bool
     {
         return $currentUser !== $user && in_array(User::ROLE_ADMIN, $currentUser->getRoles(), true);
     }
