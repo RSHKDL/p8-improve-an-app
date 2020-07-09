@@ -22,12 +22,7 @@ class TaskRepository extends ServiceEntityRepository
         parent::__construct($registry, Task::class);
     }
 
-    /**
-     * @param User $user
-     * @param bool $isDone
-     * @return array
-     */
-    public function findAllByUser(User $user, $isDone = false): array
+    public function findAllByUser(User $user, bool $isDone = false): array
     {
         $qb = $this->createQueryBuilder('t')
             ->where('t.author = :user')
@@ -38,12 +33,7 @@ class TaskRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    /**
-     * @param ?string $filter
-     * @param bool $isDone
-     * @return array
-     */
-    public function findAllWithFilter($filter = null, $isDone = false): array
+    public function findAllWithFilter(?string $filter = null, bool $isDone = false): array
     {
         $qb = $this->createQueryBuilder('t')
             ->andWhere('t.isDone = :status')
@@ -59,9 +49,10 @@ class TaskRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return array
+     * Used only in PurgeTasksCommand.
+     * @codeCoverageIgnore
      */
-    public function findAllAnonymous()
+    public function findAllAnonymous(): array
     {
         $qb = $this->createQueryBuilder('t');
         $qb->where('t.author IS NULL');

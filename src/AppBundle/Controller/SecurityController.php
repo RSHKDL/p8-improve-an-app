@@ -85,16 +85,18 @@ class SecurityController extends Controller
 
     /**
      * @Route("/login_check", name="login_check")
+     * @codeCoverageIgnore
      */
-    public function loginCheck()
+    public function loginCheck(): void
     {
         // This code is never executed.
     }
 
     /**
      * @Route("/logout", name="logout")
+     * @codeCoverageIgnore
      */
-    public function logoutCheck()
+    public function logoutCheck(): void
     {
         // This code is never executed.
     }

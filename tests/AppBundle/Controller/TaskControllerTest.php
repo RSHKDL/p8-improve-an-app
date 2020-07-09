@@ -101,6 +101,12 @@ class TaskControllerTest extends BaseControllerTest
         $this->client->request('GET', '/tasks/1/toggle');
         $this->assertStringContainsString('La tâche Some title a bien été marquée comme faite.', $this->client->getResponse()->getContent());
 
+        $this->client->request('GET', '/tasks/archived');
+        $this->assertStringContainsString('Some title', $this->client->getResponse()->getContent());
+
+        $this->client->request('GET', '/tasks/public/archived');
+        $this->assertStringContainsString('Some title', $this->client->getResponse()->getContent());
+
         $this->client->request('GET', '/tasks/1/toggle');
         $this->assertStringContainsString('La tâche Some title a bien été marquée comme non terminée.', $this->client->getResponse()->getContent());
 

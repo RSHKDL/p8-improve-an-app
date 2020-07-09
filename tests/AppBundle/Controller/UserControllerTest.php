@@ -40,9 +40,20 @@ class UserControllerTest extends BaseControllerTest
         $this->client->request('GET', '/users/create');
         $this->assertEquals(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
 
+        $this->client->followRedirects();
         $this->logIn($this->client, $this->fetchHanSoloOrAdmin(true));
-        $this->client->request('GET', '/users/create');
+        $crawler = $this->client->request('GET', '/users/create');
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+
+        $form = $crawler->selectButton('Créer un utilisateur')->form();
+        $form['user[username]']->setValue('yoda');
+        $form['user[email]']->setValue('yoda@jedi.org');
+        $form['user[plainPassword][first]']->setValue('1234');
+        $form['user[plainPassword][second]']->setValue('1234');
+        $form['user[role]']->setValue(User::ROLE_USER);
+        $this->client->submit($form);
+        $this->assertStringContainsString('L&#039;utilisateur yoda a bien été créé !', $this->client->getResponse()->getContent());
+        $this->assertStringContainsString('yoda@jedi.org', $this->client->getResponse()->getContent());
     }
 
     public function testUserCanEditSelf(): void
@@ -95,6 +106,9 @@ class UserControllerTest extends BaseControllerTest
         $this->assertStringContainsString('darth_vader', $this->client->getResponse()->getContent());
         $this->assertStringNotContainsString('han_solo', $this->client->getResponse()->getContent());
         $this->assertStringNotContainsString('luke_skywalker', $this->client->getResponse()->getContent());
+
+        $this->client->request('GET', '/users');
+        $this->assertStringContainsString('Il n&#039;y a pas encore d&#039;utilisateur enregistré.', $this->client->getResponse()->getContent());
     }
 
     public function testAdminCannotDeleteSelf(): void
