@@ -36,13 +36,14 @@ class TaskRepository extends ServiceEntityRepository
     public function findAllWithFilter(?string $filter = null, bool $isDone = false): array
     {
         $qb = $this->createQueryBuilder('t')
+            ->leftJoin('t.author', 'a')
             ->andWhere('t.isDone = :status')
             ->setParameter('status', $isDone);
 
         if ($filter !== null) {
             $qb
-                ->andWhere('t.author = :term OR t.title = :term OR t.content = :term')
-                ->setParameter('term', $filter);
+                ->andWhere('a.username LIKE :term OR t.title LIKE :term OR t.content LIKE :term')
+                ->setParameter('term', '%'.$filter.'%');
         }
 
         return $qb->getQuery()->getResult();

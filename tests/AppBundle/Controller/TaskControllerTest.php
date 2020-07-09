@@ -143,4 +143,18 @@ class TaskControllerTest extends BaseControllerTest
         $this->assertStringContainsString('La tâche a bien été supprimée.', $this->client->getResponse()->getContent());
         $this->assertStringNotContainsString('Some other title', $this->client->getResponse()->getContent());
     }
+
+    public function testFilterPublicTask(): void
+    {
+        $this->client->followRedirects();
+        $this->logIn($this->client, $this->fetchHanSoloOrAdmin());
+
+        $this->client->request('GET', '/tasks/public');
+        $this->assertStringContainsString('Some title', $this->client->getResponse()->getContent());
+        $this->assertStringContainsString('Some other title', $this->client->getResponse()->getContent());
+
+        $this->client->request('GET', '/tasks/public?filter=other');
+        $this->assertStringContainsString('Some other title', $this->client->getResponse()->getContent());
+        $this->assertStringNotContainsString('Some title', $this->client->getResponse()->getContent());
+    }
 }

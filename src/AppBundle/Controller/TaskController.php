@@ -50,7 +50,7 @@ class TaskController extends Controller
     /**
      * @Route("/tasks", name="task_list")
      */
-    public function listTasks()
+    public function listTasks(): Response
     {
         /** @var User $currentUser */
         $currentUser = $this->getUser();
@@ -61,9 +61,8 @@ class TaskController extends Controller
 
     /**
      * @Route("/tasks/archived", name="task_archived")
-     * @return Response
      */
-    public function listArchivedTasks()
+    public function listArchivedTasks(): Response
     {
         /** @var User $currentUser */
         $currentUser = $this->getUser();
@@ -74,12 +73,15 @@ class TaskController extends Controller
 
     /**
      * @Route("/tasks/public", name="task_public")
+     * @param Request $request
      * @return Response
      */
-    public function listPublicTasks()
+    public function listPublicTasks(Request $request): Response
     {
+        $filter = $request->query->get('filter');
+
         return $this->render('task/public.html.twig', [
-            'tasks' => $this->taskRepository->findAllWithFilter(null)
+            'tasks' => $this->taskRepository->findAllWithFilter($filter)
         ]);
     }
 
@@ -87,7 +89,7 @@ class TaskController extends Controller
      * @Route("/tasks/public/archived", name="task_public_archived")
      * @return Response
      */
-    public function listArchivedPublicTasks()
+    public function listArchivedPublicTasks(): Response
     {
         return $this->render('task/public.html.twig', [
             'tasks' => $this->taskRepository->findAllWithFilter(null,true)
@@ -150,7 +152,7 @@ class TaskController extends Controller
      * @param Request $request
      * @return RedirectResponse
      */
-    public function toggleTaskAction(Task $task, Request $request)
+    public function toggleTaskAction(Task $task, Request $request): RedirectResponse
     {
         $task->toggle(!$task->isDone());
         $this->getDoctrine()->getManager()->flush();
@@ -171,7 +173,7 @@ class TaskController extends Controller
      * @param Task $task
      * @return RedirectResponse
      */
-    public function deleteTaskAction(Task $task)
+    public function deleteTaskAction(Task $task): RedirectResponse
     {
         $this->denyAccessUnlessGranted('edit', $task);
         $em = $this->getDoctrine()->getManager();
