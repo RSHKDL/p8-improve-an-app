@@ -2,6 +2,7 @@
 
 namespace AppBundle\DataFixtures;
 
+use AppBundle\Entity\Task;
 use AppBundle\Entity\User;
 use AppBundle\Handler\TaskHandler;
 use AppBundle\Handler\UserHandler;
@@ -14,9 +15,9 @@ use Doctrine\Common\Persistence\ObjectManager;
  */
 class AppFixtures extends Fixture
 {
-    const DARTH_VADER = 'darth_vader';
-    const HAN_SOLO = 'han_solo';
-    const LUKE_SKYWALKER = 'luke_skywalker';
+    public const DARTH_VADER = 'darth_vader';
+    public const HAN_SOLO = 'han_solo';
+    public const LUKE_SKYWALKER = 'luke_skywalker';
 
     /**
      * @var UserHandler
@@ -47,7 +48,7 @@ class AppFixtures extends Fixture
      * @param ObjectManager $manager
      * @throws \Exception
      */
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $userOneData = [
             'username' => self::HAN_SOLO,
@@ -67,30 +68,29 @@ class AppFixtures extends Fixture
             'email' => self::DARTH_VADER.'@empire.com',
             'roles' => User::ROLE_ADMIN
         ];
+
         $hanSolo = $this->userHandler->createUserFromArray($userOneData);
         $lukeSkywalker = $this->userHandler->createUserFromArray($userTwoData);
         $this->userHandler->createUserFromArray($adminData);
 
-        $taskOneData = [
-            'title' => 'Some title',
-            'content' => 'Some content'
-        ];
-        $taskTwoData = [
-            'title' => 'Some other title',
-            'content' => 'Some other content'
-        ];
+        $taskOneData = new Task();
+        $taskOneData->setTitle('Some title');
+        $taskOneData->setContent('Some content');
+
+        $taskTwoData = new Task();
+        $taskTwoData->setTitle('Some other title');
+        $taskTwoData->setContent('Some other content');
+
         $this->taskHandler->create($taskOneData, $hanSolo);
         $this->taskHandler->create($taskTwoData, $lukeSkywalker);
 
-        $taskOneAnonymous = [
-            'title' => 'I am anonymous',
-            'content' => 'Some content'
-        ];
+        $taskOneAnonymous = new Task();
+        $taskOneAnonymous->setTitle('I am anonymous');
+        $taskOneAnonymous->setContent('Some anonymous content');
 
-        $taskTwoAnonymous = [
-            'title' => 'I am anonymous too!',
-            'content' => 'Another content'
-        ];
+        $taskTwoAnonymous = new Task();
+        $taskTwoAnonymous->setTitle('I am anonymous too!');
+        $taskTwoAnonymous->setContent('Some anonymous content');
 
         $this->taskHandler->create($taskOneAnonymous, null);
         $this->taskHandler->create($taskTwoAnonymous, null);

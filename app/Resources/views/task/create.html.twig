@@ -2,7 +2,10 @@
 
 {% block body %}
     <h1>{{ 'task.create.title'|trans }}</h1>
-    {{ form_start(form, {'action' : path('task_create')}) }}
+    {{ form_start(form, {
+        'action' : path('task_create'),
+        'attr': {'novalidate': 'novalidate'}
+    }) }}
         {{ form_widget(form) }}
 
         <button type="submit" class="btn btn-success">{{ 'button.add'|trans }}</button>

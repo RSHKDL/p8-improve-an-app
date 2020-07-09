@@ -71,7 +71,7 @@ class UserType extends AbstractType
     /**
      * @param OptionsResolver $resolver
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(['data_class' => UserDTO::class]);
         $resolver->setRequired(['isFromAdmin', 'isNewUser', 'editSelf']);
