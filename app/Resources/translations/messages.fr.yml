@@ -83,6 +83,9 @@ form:
         password_repeat: Taper à nouveau votre mot de passe
         email: Votre courriel
         role: Rôle de l'utilisateur
+    task:
+        title: Titre
+        content: Contenu de la tâche
 
 error:
     title: "Oups ! Une erreur est survenue :"
