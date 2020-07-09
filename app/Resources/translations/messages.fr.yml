@@ -4,6 +4,7 @@ home:
         public: Tâches publique
         profile: Mon compte
         dashboard: Dashboard
+    title: Bienvenue sur Todo List, l'application vous permettant de gérer l'ensemble de vos tâches sans effort !
 
 user:
     register:
@@ -29,7 +30,9 @@ user:
 task:
     title:
         public: Toutes les tâches publique
-        archived: Toutes les tâches publique archivées
+        public_archived: Toutes les tâches publique archivées
+        private: Bonjour %name%, vous avez %number% tâches en cours
+        private_archived: Bonjour %name%, vous avez %number% tâches terminées
     create:
         title: Ajouter une tâche
         success: La tâche a bien été ajoutée !
@@ -47,6 +50,8 @@ task:
     author:
         created: Créée par
         anonymous: Anonyme
+    archived: Voir les tâches archivées
+    ongoing: Voir les tâches en cours
 
 dashboard:
     title: Liste des utilisateurs

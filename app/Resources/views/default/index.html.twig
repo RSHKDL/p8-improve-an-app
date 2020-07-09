@@ -1,7 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block header_title %}
-    <h1>Bienvenue sur Todo List, l'application vous permettant de gérer l'ensemble de vos tâches sans effort !</h1>
+    <h1>{{ 'home.title'|trans }}</h1>
 {% endblock %}
 
-{% block header_img %}<img class="slide-image" src="{{ asset('img/todolist_homepage.jpg') }}" alt="todo list">{% endblock %}
+{% block header_img %}
+    <img class="slide-image" src="{{ asset('img/todolist_homepage.jpg') }}" alt="todo list">
+{% endblock %}

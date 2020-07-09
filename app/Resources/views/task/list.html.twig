@@ -2,17 +2,29 @@
 
 {% block body %}
     <header class="mb-3">
-        <h1>Welcome {{ app.user.username }}, you have {{ tasks|length }} {% if app.request.attributes.get('_route') == 'task_list' %}ongoing{% else %}archived{% endif %} tasks!</h1>
+        <h1>
+            {% if app.request.attributes.get('_route') == 'task_list' %}
+                {{ 'task.title.private'|trans({
+                    '%name%': app.user.username,
+                    '%number%': tasks|length
+                }) }}
+            {% else %}
+                {{ 'task.title.private_archived'|trans({
+                    '%name%': app.user.username,
+                    '%number%': tasks|length
+                }) }}
+            {% endif %}
+        </h1>
         <a href="{{ path('task_create') }}" class="btn btn-info">
             <span class="fas fa-plus-circle" aria-hidden="true"></span> {{ 'task.create.title'|trans }}
         </a>
         {% if app.request.attributes.get('_route') == 'task_list' %}
         <a href="{{ path('task_archived') }}" class="btn btn-info">
-            <span class="fas fa-archive" aria-hidden="true"></span> See archived tasks
+            <span class="fas fa-archive" aria-hidden="true"></span> {{ 'task.archived'|trans }}
         </a>
         {% else %}
         <a href="{{ path('task_list') }}" class="btn btn-info">
-            <span class="fas fa-list" aria-hidden="true"></span> See ongoing tasks
+            <span class="fas fa-list" aria-hidden="true"></span> {{ 'task.ongoing'|trans }}
         </a>
         {% endif %}
     </header>
