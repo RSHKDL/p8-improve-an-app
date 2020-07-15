@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>{{ "error.title"|trans }} {{ status_text }}</h1>
+    <p>
+        {{ "error.message"|trans({'%code%': status_code, '%text%': status_text}) }}
+        <a href="{{ path('homepage') }}">{{ "error.link"|trans }}</a>
+    </p>
+{% endblock %}

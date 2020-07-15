@@ -14,15 +14,15 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 final class TaskVoter extends Voter
 {
-    const CAN_VIEW = 'view';
-    const CAN_EDIT = 'edit';
+    public const CAN_VIEW = 'view';
+    public const CAN_EDIT = 'edit';
 
     /**
      * @param string $attribute
      * @param Task $subject
      * @return bool
      */
-    protected function supports($attribute, $subject)
+    protected function supports($attribute, $subject): bool
     {
         return in_array($attribute, [self::CAN_VIEW, self::CAN_EDIT], true)
             && $subject instanceof Task;
@@ -34,7 +34,7 @@ final class TaskVoter extends Voter
      * @param TokenInterface $token
      * @return bool
      */
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
     {
         /** @var User $user */
         $user = $token->getUser();
@@ -50,30 +50,22 @@ final class TaskVoter extends Voter
                 return $this->canEdit($task, $user);
                 break;
             case self::CAN_VIEW:
-                return $this->canView($task, $user);
+                return $this->canView();
                 break;
         }
 
-        return false;
+        // @codeCoverageIgnoreStart
+        throw new \LogicException('This code should not be reached!');
+        // @codeCoverageIgnoreEnd
     }
 
-    /**
-     * @param Task $task
-     * @param User $user
-     * @return bool
-     */
-    private function canEdit(Task $task, User $user)
+    private function canEdit(Task $task, User $user): bool
     {
         return $task->getAuthor() === $user || in_array(User::ROLE_ADMIN, $user->getRoles(), true);
     }
 
-    /**
-     * @param Task $task
-     * @param User $user
-     * @return bool
-     */
-    private function canView(Task $task, User $user)
+    private function canView(): bool
     {
-        return $this->canEdit($task, $user);
+        return true;
     }
 }

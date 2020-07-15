@@ -13,17 +13,17 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class UserTest extends TestCase
 {
-    public function testAdminUser()
+    public function testAdminUser(): void
     {
         $user = new User();
-        $user->setRoles([User::ROLE_ADMIN]);
+        $user->setRoles(User::ROLE_ADMIN);
 
         $this->assertInstanceOf(UserInterface::class, $user);
-        $this->assertInternalType('bool', $user->isAdmin());
+        $this->assertIsBool($user->isAdmin());
         $this->assertTrue($user->isAdmin());
     }
 
-    public function testAddAndRemoveTasksToUser()
+    public function testAddAndRemoveTasksToUser(): void
     {
         $user = new User();
         $task1 = $this->createMock(Task::class);
@@ -38,5 +38,22 @@ class UserTest extends TestCase
         $user->removeTask($task2);
         $this->assertContains($task1, $user->getTasks());
         $this->assertNotContains($task2, $user->getTasks());
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testAddAndRemoveTask(): void
+    {
+        $user = new User();
+        $task = new Task();
+
+        $user->addTask($task);
+        $this->assertContains($task, $user->getTasks());
+        $this->assertSame($user, $task->getAuthor());
+
+        $user->removeTask($task);
+        $this->assertNotContains($task, $user->getTasks());
+        $this->assertNull($task->getAuthor());
     }
 }

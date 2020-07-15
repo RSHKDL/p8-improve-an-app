@@ -11,47 +11,42 @@ use Tests\AppBundle\Controller\BaseControllerTest;
  */
 class SecurityControllerTest extends BaseControllerTest
 {
-    public function testRegisterThenLoginNewUser()
+    public function testRegisterThenLoginNewUser(): void
     {
         $this->client->followRedirects();
         $crawler = $this->client->request('GET', '/register');
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-        $this->assertContains('Inscription', $this->client->getResponse()->getContent());
+        $this->assertStringContainsString('Inscription', $this->client->getResponse()->getContent());
 
         $form = $crawler->selectButton('S\'inscrire')->form();
         $form['user[username]']->setValue('chewbacca');
-        $form['user[password][first]']->setValue('1234');
-        $form['user[password][second]']->setValue('1234');
+        $form['user[plainPassword][first]']->setValue('1234');
+        $form['user[plainPassword][second]']->setValue('1234');
         $form['user[email]']->setValue('chewbacca@rebel.com');
         $crawler = $this->client->submit($form);
-        $this->assertContains('Superbe !', $this->client->getResponse()->getContent());
+        $this->assertStringContainsString('Superbe !', $this->client->getResponse()->getContent());
 
         $form = $crawler->selectButton('Se connecter')->form();
         $form['_username']->setValue('chewbacca');
         $form['_password']->setValue('1234');
         $this->client->submit($form);
-        $this->assertContains('chewbacca', $this->client->getResponse()->getContent());
-        $this->assertContains('Se déconnecter', $this->client->getResponse()->getContent());
+        $this->assertStringContainsString('chewbacca', $this->client->getResponse()->getContent());
+        $this->assertStringContainsString('Se déconnecter', $this->client->getResponse()->getContent());
     }
 
-    /**
-     * @todo test skipped because custom duplicate validator is missing
-     */
-    public function testCannotRegisterUserWithSameEmail()
+    public function testCannotRegisterUserWithSameEmail(): void
     {
-        $this->markTestSkipped('Must setup a custom duplicate validator');
-
         $crawler = $this->client->request('GET', '/register');
         $form = $crawler->selectButton('S\'inscrire')->form();
         $form['user[username]']->setValue('chewbacca');
-        $form['user[password][first]']->setValue('1234');
-        $form['user[password][second]']->setValue('1234');
+        $form['user[plainPassword][first]']->setValue('1234');
+        $form['user[plainPassword][second]']->setValue('1234');
         $form['user[email]']->setValue('han_solo@rebel.com');
         $this->client->submit($form);
-        $this->assertContains('This email already exist', $this->client->getResponse()->getContent());
+        $this->assertStringContainsString('Il semble que vous ayez déjà un compte ici', $this->client->getResponse()->getContent());
     }
 
-    public function testLoginWithBadCredentials()
+    public function testLoginWithBadCredentials(): void
     {
         $this->client->followRedirects();
         $crawler = $this->client->request('GET', '/login');
@@ -59,10 +54,10 @@ class SecurityControllerTest extends BaseControllerTest
         $form['_username']->setValue('han_solo');
         $form['_password']->setValue('wrong password');
         $this->client->submit($form);
-        $this->assertContains('Identifiants invalides.', $this->client->getResponse()->getContent());
+        $this->assertStringContainsString('Identifiants invalides.', $this->client->getResponse()->getContent());
     }
 
-    public function testLoginWithGoodCredentials()
+    public function testLoginWithGoodCredentials(): void
     {
         $this->client->followRedirects();
         $crawler = $this->client->request('GET', '/login');
@@ -70,6 +65,6 @@ class SecurityControllerTest extends BaseControllerTest
         $form['_username']->setValue('han_solo');
         $form['_password']->setValue('1234');
         $this->client->submit($form);
-        $this->assertContains('han_solo', $this->client->getResponse()->getContent());
+        $this->assertStringContainsString('han_solo', $this->client->getResponse()->getContent());
     }
 }

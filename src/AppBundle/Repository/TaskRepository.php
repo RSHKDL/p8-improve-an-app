@@ -3,6 +3,7 @@
 namespace AppBundle\Repository;
 
 use AppBundle\Entity\Task;
+use AppBundle\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -21,10 +22,38 @@ class TaskRepository extends ServiceEntityRepository
         parent::__construct($registry, Task::class);
     }
 
+    public function findAllByUser(User $user, bool $isDone = false): array
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->where('t.author = :user')
+            ->andWhere('t.isDone = :status')
+            ->setParameter('user', $user)
+            ->setParameter('status', $isDone);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findAllWithFilter(?string $filter = null, bool $isDone = false): array
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->leftJoin('t.author', 'a')
+            ->andWhere('t.isDone = :status')
+            ->setParameter('status', $isDone);
+
+        if ($filter !== null) {
+            $qb
+                ->andWhere('a.username LIKE :term OR t.title LIKE :term OR t.content LIKE :term')
+                ->setParameter('term', '%'.$filter.'%');
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
     /**
-     * @return array
+     * Used only in PurgeTasksCommand.
+     * @codeCoverageIgnore
      */
-    public function findAllAnonymous()
+    public function findAllAnonymous(): array
     {
         $qb = $this->createQueryBuilder('t');
         $qb->where('t.author IS NULL');

@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\User;
 use AppBundle\Form\UserType;
 use AppBundle\Handler\UserHandler;
+use AppBundle\Repository\UserRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -25,16 +26,24 @@ class UserController extends Controller
     private $userHandler;
 
     /**
+     * @var UserRepository
+     */
+    private $userRepository;
+
+    /**
      * UserController constructor.
      * @param TranslatorInterface $translator
      * @param UserHandler $userHandler
+     * @param UserRepository $userRepository
      */
     public function __construct(
         TranslatorInterface $translator,
-        UserHandler $userHandler
+        UserHandler $userHandler,
+        UserRepository $userRepository
     ) {
         $this->translator = $translator;
         $this->userHandler = $userHandler;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -43,7 +52,7 @@ class UserController extends Controller
     public function listAction()
     {
         $this->denyAccessUnlessGranted(User::ROLE_ADMIN);
-        $nonAdminUsers = $this->getDoctrine()->getRepository('AppBundle:User')->findAllNonAdmin();
+        $nonAdminUsers = $this->userRepository->findAllNonAdmin();
 
         return $this->render('user/list.html.twig',
             [
@@ -72,15 +81,16 @@ class UserController extends Controller
     public function createAction(Request $request)
     {
         $this->denyAccessUnlessGranted(User::ROLE_ADMIN);
-        $form = $this->createForm(UserType::class, [], [
+        $form = $this->createForm(UserType::class, null, [
             'isFromAdmin' => true,
             'isNewUser' => true,
-            'editSelf' => false
+            'editSelf' => false,
+            'validation_groups' => ['registration'],
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $this->userHandler->create($form->getData());
+            $user = $this->userHandler->createUserFromDTO($form->getData());
             $this->addFlash(
                 'success',
                 $this->translator->trans('user.create.success', ['%name' => $user->getUsername()]));
@@ -102,16 +112,18 @@ class UserController extends Controller
         $this->denyAccessUnlessGranted('edit', $user);
         /** @var User $currentUser */
         $currentUser = $this->getUser();
+        $dto = $this->userHandler->createUserDtoFromUser($user);
 
-        $form = $this->createForm(UserType::class, $user, [
+        $form = $this->createForm(UserType::class, $dto, [
             'isFromAdmin' => $currentUser->isAdmin(),
             'isNewUser' => false,
-            'editSelf' => $currentUser === $user
+            'editSelf' => $currentUser === $user,
+            'validation_groups' => ['edition']
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $this->userHandler->update($form->getData());
+            $user = $this->userHandler->update($user, $form->getData());
             $this->addFlash('success', $this->translator->trans('user.update.success', ['%name' => $user->getUsername()]));
 
             return in_array(User::ROLE_ADMIN, $currentUser->getRoles(), true) ? $this->redirectToRoute('user_list') : $this->redirectToRoute('user_profile');
@@ -127,8 +139,7 @@ class UserController extends Controller
      */
     public function deleteAction(User $user)
     {
-        $currentUser = $this->getUser();
-        $this->denyAccessUnlessGranted('delete', $currentUser);
+        $this->denyAccessUnlessGranted('delete', $user);
 
         $this->userHandler->delete($user);
         $this->addFlash('success', $this->translator->trans('user.delete.success'));

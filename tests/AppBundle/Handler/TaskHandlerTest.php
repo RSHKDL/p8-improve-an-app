@@ -25,7 +25,7 @@ class TaskHandlerTest extends TestCase
      */
     private $mockEntityManager;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->mockEntityManager = $this->createMock(EntityManagerInterface::class);
         $this->taskHandler = new TaskHandler($this->mockEntityManager);
@@ -33,42 +33,47 @@ class TaskHandlerTest extends TestCase
 
     /**
      * @dataProvider getTasks
-     * @param $title
-     * @param $content
-     * @param $username
-     * @throws \Exception
+     * @param Task $task
+     * @param User $user
      */
-    public function testCreateTaskWithValidData($title, $content, $username)
+    public function testCreateTaskWithValidData(Task $task, User $user): void
     {
         $this->mockEntityManager->expects($this->once())->method('persist')->with($this->isInstanceOf(Task::class));
         $this->mockEntityManager->expects($this->atLeastOnce())->method('flush');
 
-        $data = [
-            'title' => $title,
-            'content' => $content
-        ];
-
-        $user = new User();
-        $user->setUsername($username);
-
-        $task = $this->taskHandler->create($data, $user);
-        $this->assertInstanceOf(Task::class, $task);
+        $task = $this->taskHandler->create($task, $user);
         $this->assertInstanceOf(User::class, $task->getAuthor());
-        $this->assertInternalType('string', $task->getTitle());
-        $this->assertInternalType('string', $task->getContent());
-        $this->assertSame($title, $task->getTitle(), "title don't match");
-        $this->assertSame($content, $task->getContent(), "content don't match");
-        $this->assertSame($username, $task->getAuthor()->getUsername(), "username don't match");
+        $this->assertIsString($task->getTitle());
+        $this->assertIsString($task->getContent());
+        $this->assertSame($user->getUsername(), $task->getAuthor()->getUsername());
     }
 
     /**
-     * @return array
+     * @return \Generator
+     * @throws \Exception
      */
-    public function getTasks()
+    public function getTasks(): \Generator
     {
-        return [
-            'Task #1' => ['Homework', 'Do my homework', 'Bob'],
-            'Task #2' => ['Swimming', 'Go to the swimming pool', 'Stacy']
+        $user1 = new User();
+        $user1->setUsername('Bob');
+        $task1 = new Task();
+        $task1->setTitle('Homework');
+        $task1->setContent('Do my homework');
+
+        $user2 = new User();
+        $user2->setUsername('Stacy');
+        $task2 = new Task();
+        $task2->setTitle('Swimming');
+        $task2->setContent('Go to the swimming pool');
+
+        yield 'Task #1' => [
+            $task1,
+            $user1
+        ];
+
+        yield 'Task #2' => [
+            $task2,
+            $user2
         ];
     }
 }

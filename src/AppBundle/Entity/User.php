@@ -12,8 +12,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ORM\Table("user")
  * @ORM\Entity
- * @UniqueEntity("username")
- * @UniqueEntity("email")
+ * @UniqueEntity(fields={"username"}, message="user.username.unique")
+ * @UniqueEntity(fields={"email"}, message="user.email.unique")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  */
 class User implements UserInterface
@@ -30,7 +30,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=25, unique=true)
-     * @Assert\NotBlank(message="Vous devez saisir un nom d'utilisateur.")
+     * @Assert\NotBlank(message="user.username.not_blank")
      */
     private $username;
 
@@ -41,8 +41,8 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=60, unique=true)
-     * @Assert\NotBlank(message="Vous devez saisir une adresse email.")
-     * @Assert\Email(message="Le format de l'adresse n'est pas correcte.")
+     * @Assert\NotBlank(message="user.email.not_blank")
+     * @Assert\Email(message="user.email.format")
      */
     private $email;
 
@@ -74,9 +74,9 @@ class User implements UserInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getUsername(): string
+    public function getUsername(): ?string
     {
         return $this->username;
     }
@@ -106,9 +106,9 @@ class User implements UserInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
@@ -122,19 +122,24 @@ class User implements UserInterface
     }
 
     /**
-     * @return array
+     * @return array|null
      */
-    public function getRoles(): array
+    public function getRoles(): ?array
     {
         return $this->roles;
     }
 
     /**
-     * @param array $roles
+     * @param mixed $role
      */
-    public function setRoles(array $roles)
+    public function setRoles($role)
     {
-        $this->roles = $roles;
+        if (is_array($role)) {
+            $this->roles = array_replace($this->roles, $role);
+        } else {
+            $this->roles = [];
+            $this->roles[] = $role;
+        }
     }
 
     /**

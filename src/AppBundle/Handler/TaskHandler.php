@@ -30,16 +30,12 @@ final class TaskHandler
     }
 
     /**
-     * @param array $data
-     * @param User $user
+     * @param Task $task
+     * @param User|null $user
      * @return Task
-     * @throws \Exception
      */
-    public function create(array $data, User $user): Task
+    public function create(Task $task, ?User $user): Task
     {
-        $task = new Task();
-        $task->setTitle($data['title']);
-        $task->setContent($data['content']);
         $task->setAuthor($user);
 
         $this->entityManager->persist($task);

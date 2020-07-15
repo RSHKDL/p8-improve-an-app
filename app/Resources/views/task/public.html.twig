@@ -3,29 +3,24 @@
 {% block body %}
     <header class="mb-3">
         <h1>
-            {% if app.request.attributes.get('_route') == 'task_list' %}
-                {{ 'task.title.private'|trans({
-                    '%name%': app.user.username,
-                    '%number%': tasks|length
-                }) }}
+            {% if app.request.attributes.get('_route') == 'task_public' %}
+            {{ 'task.title.public'|trans }}
             {% else %}
-                {{ 'task.title.private_archived'|trans({
-                    '%name%': app.user.username,
-                    '%number%': tasks|length
-                }) }}
+            {{ 'task.title.public_archived'|trans }}
             {% endif %}
+            ({{ tasks|length }})
         </h1>
         <a href="{{ path('task_create') }}" class="btn btn-info">
             <span class="fas fa-plus-circle" aria-hidden="true"></span> {{ 'task.create.title'|trans }}
         </a>
-        {% if app.request.attributes.get('_route') == 'task_list' %}
-        <a href="{{ path('task_archived') }}" class="btn btn-info">
-            <span class="fas fa-archive" aria-hidden="true"></span> {{ 'task.archived'|trans }}
-        </a>
+        {% if app.request.attributes.get('_route') == 'task_public' %}
+            <a href="{{ path('task_public_archived') }}" class="btn btn-info">
+                <span class="fas fa-archive" aria-hidden="true"></span> {{ 'task.archived'|trans }}
+            </a>
         {% else %}
-        <a href="{{ path('task_list') }}" class="btn btn-info">
-            <span class="fas fa-list" aria-hidden="true"></span> {{ 'task.ongoing'|trans }}
-        </a>
+            <a href="{{ path('task_public') }}" class="btn btn-info">
+                <span class="fas fa-list" aria-hidden="true"></span> {{ 'task.ongoing'|trans }}
+            </a>
         {% endif %}
     </header>
     {% for row in tasks|batch(4) %}
@@ -41,19 +36,14 @@
                 {% endif %}
                 </div>
                 <h4 class="card-title mb-0">
-                    {% if app.request.attributes.get('_route') == 'task_list' %}
                     <a href="{{ path('task_edit', {'id' : task.id }) }}">{{ task.title }}</a>
-                    {% else %}
-                    {{ task.title }}
-                    {% endif %}
                 </h4>
             </header>
             <section class="card-body">
                 {{ task.content }}
             </section>
             <footer class="card-footer">
-                {# Used only for public tasks
-                <small>{{ 'task.author.created'|trans }} {% if task.author %}{{ task.author.username }}{% else %}{{ 'task.author.anonymous'|trans }}{% endif %}</small>#}
+                <small>{{ 'task.author.created'|trans }} {% if task.author %}{{ task.author.username }}{% else %}{{ 'task.author.anonymous'|trans }}{% endif %}</small>
                 <form action="{{ path('task_toggle', {'id' : task.id }) }}">
                     <button class="btn btn-success btn-sm pull-right">
                         {% if not task.isDone %}

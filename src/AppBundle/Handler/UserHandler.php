@@ -1,8 +1,8 @@
 <?php
 
-
 namespace AppBundle\Handler;
 
+use AppBundle\DTO\UserDTO;
 use AppBundle\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -24,7 +24,7 @@ final class UserHandler
     private $passwordEncoder;
 
     /**
-     * TaskHandler constructor.
+     * UserHandler constructor.
      * @param EntityManagerInterface $entityManager
      * @param UserPasswordEncoderInterface $passwordEncoder
      */
@@ -38,16 +38,16 @@ final class UserHandler
 
     /**
      * @todo Send a mail to the newly created user with his credentials
-     * @param array $data
+     * @param UserDTO $dto
      * @return User
      */
-    public function create(array $data): User
+    public function createUserFromDTO(UserDTO $dto): User
     {
         $user = new User();
-        $user->setUsername($data['username']);
-        $user->setPassword($this->passwordEncoder->encodePassword($user, $data['password']));
-        $user->setEmail($data['email']);
-        $user->setRoles([$data['roles'] ?? User::ROLE_USER]);
+        $user->setUsername($dto->username);
+        $user->setEmail($dto->email);
+        $user->setPassword($this->passwordEncoder->encodePassword($user, $dto->plainPassword));
+        $user->setRoles(null === $dto->role ? User::ROLE_USER : $dto->role);
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
@@ -57,14 +57,18 @@ final class UserHandler
 
     /**
      * @param User $user
+     * @param UserDTO $dto
      * @return User
      */
-    public function update(User $user): User
+    public function update(User $user, UserDTO $dto): User
     {
-        if (null !== $user->getPassword()) {
-            $password = $this->passwordEncoder->encodePassword($user, $user->getPassword());
-            $user->setPassword($password);
+        $user->setUsername($dto->username);
+        $user->setEmail($dto->email);
+        if (null !== $dto->plainPassword) {
+            $user->setPassword($this->passwordEncoder->encodePassword($user, $dto->plainPassword));
         }
+        $user->setRoles($dto->roles);
+
         $this->entityManager->flush();
 
         return $user;
@@ -81,5 +85,37 @@ final class UserHandler
         }
         $this->entityManager->remove($user);
         $this->entityManager->flush();
+    }
+
+    /**
+     * @param array $data
+     * @return User
+     */
+    public function createUserFromArray(array $data): User
+    {
+        $user = new User();
+        $user->setUsername($data['username']);
+        $user->setPassword($this->passwordEncoder->encodePassword($user, $data['password']));
+        $user->setEmail($data['email']);
+        $user->setRoles($data['roles'] ?? User::ROLE_USER);
+
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+
+        return $user;
+    }
+
+    /**
+     * @param User $user
+     * @return UserDTO
+     */
+    public function createUserDtoFromUser(User $user): UserDTO
+    {
+        $dto = new UserDTO();
+        $dto->username = $user->getUsername();
+        $dto->email = $user->getEmail();
+        $dto->roles = $user->getRoles();
+
+        return $dto;
     }
 }

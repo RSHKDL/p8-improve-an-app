@@ -18,61 +18,108 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 class TaskVoterTest extends TestCase
 {
     /**
-     * @dataProvider voterProvider
+     * @dataProvider provideCases
+     * @param string $attribute
      * @param User|null $user
      * @param bool $isAuthor
-     * @param int $expected
+     * @param bool $isTaskAnonymous
+     * @param int $expectedVote
      * @throws \Exception
      */
-    public function testVote(?User $user, $isAuthor, $expected)
+    public function testVote(string $attribute, ?User $user, bool $isAuthor, bool $isTaskAnonymous, int $expectedVote): void
     {
-        /*
-         * Mocking the token is a pain in the ass.
-         * I'll follow the "Don't mock what you don't own" principle,
-         * and since I do not own symfony code,
-         * I'll test the voters in the functional tests.
-         * https://stackoverflow.com/questions/35579884/symfony-unit-test-security-acl-annotation
-         * https://davesquared.net/2011/04/dont-mock-types-you-dont-own.html
-         */
-        $task = new Task();
         $token = new AnonymousToken('secret', 'anonymous');
-
         if ($user) {
             $token = new UsernamePasswordToken($user, 'credentials', 'memory');
         }
 
-        if ($user && $isAuthor) {
-            $task->setAuthor($user);
+        $task = new Task();
+        if (!$isTaskAnonymous) {
+            $task->setAuthor($isAuthor ? $user : $this->createMockUser(99));
         }
 
         $taskVoter = new TaskVoter();
-        $result = $taskVoter->vote($token, $task, [TaskVoter::CAN_EDIT]);
+        $vote = $taskVoter->vote($token, $task, [$attribute]);
 
-        $this->assertEquals($expected, $result);
+        $this->assertEquals($expectedVote, $vote);
     }
 
     /**
-     * @return array
+     * Attributes, User, IsAuthor, IsTaskAnonymous, ExpectedVote
      * @throws \Exception
      */
-    public function voterProvider()
+    public function provideCases(): \Generator
     {
-        return [
-            // $user, isAuthor, expected
-            '#1 same user' => [$this->createMockUser(), true, VoterInterface::ACCESS_GRANTED],
-            '#2 other user' => [$this->createMockUser(), false, VoterInterface::ACCESS_DENIED],
-            '#3 no user' => [null, false, VoterInterface::ACCESS_DENIED]
+        yield '#1 anonymous user cannot view task' => [
+            'view',
+            null,
+            false,
+            false,
+            VoterInterface::ACCESS_DENIED
+        ];
+
+        yield '#2 anonymous user cannot edit task' => [
+            'edit',
+            null,
+            false,
+            false,
+            VoterInterface::ACCESS_DENIED
+        ];
+
+        yield '#3 non-owner can view task' => [
+            'view',
+            $this->createMockUser(),
+            false,
+            false,
+            VoterInterface::ACCESS_GRANTED
+        ];
+
+        yield '#4 non-owner cannot edit task' => [
+            'edit',
+            $this->createMockUser(),
+            false,
+            false,
+            VoterInterface::ACCESS_DENIED
+        ];
+
+        yield '#5 owner can edit owned task' => [
+            'edit',
+            $this->createMockUser(),
+            true,
+            false,
+            VoterInterface::ACCESS_GRANTED
+        ];
+
+        yield '#6 admin can edit non owned task' => [
+            'edit',
+            $this->createMockUser(5, true),
+            false,
+            false,
+            VoterInterface::ACCESS_GRANTED
+        ];
+
+        yield '#7 admin can edit anonymous task' => [
+            'edit',
+            $this->createMockUser(5, true),
+            false,
+            true,
+            VoterInterface::ACCESS_GRANTED
+        ];
+
+        yield '#8 vote with wrong attribute' => [
+            'wrong',
+            $this->createMockUser(),
+            false,
+            false,
+            VoterInterface::ACCESS_ABSTAIN
         ];
     }
 
-    /**
-     * @return \PHPUnit\Framework\MockObject\MockObject
-     */
-    private function createMockUser()
+    private function createMockUser(int $id = 1, bool $isAdmin = false): User
     {
         $user = $this->createMock(User::class);
-        $user->method('getId')->willReturn(1);
-        $user->method('getRoles')->willReturn([User::ROLE_USER]);
+        $user->method('getId')->willReturn($id);
+        $user->method('getRoles')->willReturn([$isAdmin ? User::ROLE_ADMIN : User::ROLE_USER]);
 
         return $user;
     }

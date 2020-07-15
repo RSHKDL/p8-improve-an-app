@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class DefaultControllerTest extends WebTestCase
 {
-    public function testHomepageIsUp()
+    public function testHomepageIsUp(): void
     {
         $client = static::createClient();
         $client->request('GET', '/');

@@ -1,0 +1,17 @@
+user:
+    username:
+        not_blank: Vous devez saisir un nom d'utilisateur.
+        unique: Le nom d'utilisateur est déjà pris.
+    email:
+        not_blank: Vous devez saisir une adresse email.
+        unique: Il semble que vous ayez déjà un compte ici.
+        format: Le format de l'adresse n'est pas correcte.
+    password:
+        mismatch: Les deux mots de passe doivent correspondre
+        mandatory: Vous devez saisir un mot de passe
+
+task:
+    title:
+        not_blank: Vous devez saisir un titre.
+    content:
+        not_blank: Vous devez saisir du contenu.

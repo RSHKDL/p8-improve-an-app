@@ -44,7 +44,7 @@ final class PurgeTasksCommand extends Command
         $this->taskRepository = $taskRepository;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Purge all anonymous tasks')
@@ -73,7 +73,7 @@ final class PurgeTasksCommand extends Command
     /**
      * @param SymfonyStyle $io
      */
-    private function purgeAnonymous(SymfonyStyle $io)
+    private function purgeAnonymous(SymfonyStyle $io): void
     {
         $tasks = $this->taskRepository->findAllAnonymous();
         $number = count($tasks);
@@ -100,7 +100,7 @@ final class PurgeTasksCommand extends Command
     /**
      * @param SymfonyStyle $io
      */
-    private function purgeAll(SymfonyStyle $io)
+    private function purgeAll(SymfonyStyle $io): void
     {
         $tasks = $this->taskRepository->findAll();
         $number = count($tasks);
@@ -124,11 +124,7 @@ final class PurgeTasksCommand extends Command
         $io->success('All tasks purged');
     }
 
-    /**
-     * @param int $number
-     * @return bool
-     */
-    private function checkIfPurgeNeeded($number)
+    private function checkIfPurgeNeeded(int $number): bool
     {
         return !($number === 0);
     }

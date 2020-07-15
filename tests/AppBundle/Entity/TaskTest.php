@@ -16,13 +16,13 @@ class TaskTest extends TestCase
     /**
      * @throws \Exception
      */
-    public function testSetAuthor()
+    public function testSetAuthor(): void
     {
-        $task = new Task();
         $author = new User();
         $author->setUsername('Shakespeare');
-
+        $task = new Task();
         $task->setAuthor($author);
+
         $this->assertInstanceOf(UserInterface::class, $task->getAuthor());
         $this->assertSame('Shakespeare', $task->getAuthor()->getUsername());
     }
@@ -30,7 +30,7 @@ class TaskTest extends TestCase
     /**
      * @throws \Exception
      */
-    public function testIsDone()
+    public function testIsDone(): void
     {
         $task = new Task();
 
@@ -44,10 +44,11 @@ class TaskTest extends TestCase
     /**
      * @throws \Exception
      */
-    public function testSetCreatedAt()
+    public function testSetCreatedAt(): void
     {
         $task = new Task();
+        $task->setCreatedAt(new \DateTime('2020-02-02'));
 
-        $this->assertInstanceOf(\DateTime::class, $task->getCreatedAt());
+        $this->assertSame('Feb 2nd, 2020', $task->getCreatedAt()->format('M jS, Y'));
     }
 }

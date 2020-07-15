@@ -1,7 +1,10 @@
 home:
-    welcome:
-        default: Bienvenue
-        anonymous: Bienvenue, anonyme !
+    nav:
+        tasks: Mes tâches
+        public: Tâches publique
+        profile: Mon compte
+        dashboard: Dashboard
+    title: Bienvenue sur Todo List, l'application vous permettant de gérer l'ensemble de vos tâches sans effort !
 
 user:
     register:
@@ -25,8 +28,13 @@ user:
     role_user: Utilisateur
 
 task:
+    title:
+        public: Toutes les tâches publique
+        public_archived: Toutes les tâches publique archivées
+        private: Bonjour %name%, vous avez %number% tâches en cours
+        private_archived: Bonjour %name%, vous avez %number% tâches terminées
     create:
-        title: Créér une tâche
+        title: Ajouter une tâche
         success: La tâche a bien été ajoutée !
     update:
         success: La tâche a bien été modifiée.
@@ -42,6 +50,8 @@ task:
     author:
         created: Créée par
         anonymous: Anonyme
+    archived: Voir les tâches archivées
+    ongoing: Voir les tâches en cours
 
 dashboard:
     title: Liste des utilisateurs
@@ -53,6 +63,7 @@ dashboard:
         actions: Actions
 
 button:
+    add: Ajouter
     validate: Valider
     update: Éditer
     modify: Modifier
@@ -60,17 +71,23 @@ button:
     login: Se connecter
     logout: Se déconnecter
     register: S'inscrire
-    dashboard: Dashboard
     
 flash:
     success: Superbe !
-    error: Oops !
+    error: Oups !
 
 form:
     user:
         username: Nom d'utilisateur
         password: Votre mot de passe
         password_repeat: Taper à nouveau votre mot de passe
-        password_missmatch: Les deux mots de passe doivent correspondre
         email: Votre courriel
         role: Rôle de l'utilisateur
+    task:
+        title: Titre
+        content: Contenu de la tâche
+
+error:
+    title: "Oups ! Une erreur est survenue :"
+    message: Désolé, le serveur a retourné l'erreur %code% %text%. Vous pouvez
+    link: retourner sur la page d'accueil.
