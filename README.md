@@ -41,7 +41,7 @@ This project is a very basic **To do list**. The goal was to improve upon an exi
 
 ## Tests
 
-- Test are done with [Phpunit](https://phpunit.de/manual/6.5/en/index.html) only.
+- Test are done with [Phpunit](https://phpunit.readthedocs.io/en/8.3/) only.
 - Use the following command to run all the tests:
     ```
     $ ./vendor/bin/simple-phpunit
