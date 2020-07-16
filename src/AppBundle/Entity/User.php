@@ -57,73 +57,46 @@ class User implements UserInterface
      */
     private $tasks;
 
-    /**
-     * User constructor.
-     */
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
     }
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return string|null
-     */
     public function getUsername(): ?string
     {
         return $this->username;
     }
 
-    /**
-     * @param string $username
-     */
-    public function setUsername($username): void
+    public function setUsername(?string $username): void
     {
         $this->username = $username;
     }
 
-    /**
-     * @return string|null
-     */
     public function getPassword(): ?string
     {
         return $this->password;
     }
 
-    /**
-     * @param string $password
-     */
-    public function setPassword($password): void
+    public function setPassword(?string $password): void
     {
         $this->password = $password;
     }
 
-    /**
-     * @return string|null
-     */
     public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    /**
-     * @param string $email
-     */
-    public function setEmail($email): void
+    public function setEmail(?string $email): void
     {
         $this->email = $email;
     }
 
-    /**
-     * @return array|null
-     */
     public function getRoles(): ?array
     {
         return $this->roles;
@@ -142,20 +115,17 @@ class User implements UserInterface
         }
     }
 
-    /**
-     * @return bool
-     */
     public function isAdmin(): bool
     {
         return in_array(self::ROLE_ADMIN, $this->getRoles(), true);
     }
 
-    public function getSalt()
+    public function getSalt(): ?string
     {
         return null;
     }
 
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
     }
 
@@ -167,10 +137,6 @@ class User implements UserInterface
         return $this->tasks;
     }
 
-    /**
-     * @param Task $task
-     * @return User
-     */
     public function addTask(Task $task): self
     {
         if (!$this->tasks->contains($task)) {
@@ -181,10 +147,6 @@ class User implements UserInterface
         return $this;
     }
 
-    /**
-     * @param Task $task
-     * @return User
-     */
     public function removeTask(Task $task): self
     {
         if ($this->tasks->contains($task)) {
