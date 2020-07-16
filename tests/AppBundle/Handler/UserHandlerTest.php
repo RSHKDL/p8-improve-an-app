@@ -87,8 +87,10 @@ class UserHandlerTest extends TestCase
     {
         $this->mockEntityManager->expects($this->atLeastOnce())->method('flush');
 
+        $this->assertStringContainsString($user->getUsername(), 'TestUser');
         $user = $this->userHandler->update($user, $dto);
         $this->assertInstanceOf(User::class, $user);
+        $this->assertStringContainsString($user->getUsername(), 'UpdatedUsername');
     }
 
     /**
@@ -155,12 +157,17 @@ class UserHandlerTest extends TestCase
 
     private function provideUser(): User
     {
-        return new User();
+        $user = new User();
+        $user->setUsername('TestUser');
+        $user->setEmail('testuser@mail.com');
+
+        return $user;
     }
 
     private function provideUserDto(): UserDTO
     {
         $dto = new UserDTO();
+        $dto->username = 'UpdatedUsername';
         $dto->plainPassword = '1234';
 
         return $dto;
