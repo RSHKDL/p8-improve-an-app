@@ -18,8 +18,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class User implements UserInterface
 {
-    const ROLE_USER = 'ROLE_USER';
-    const ROLE_ADMIN = 'ROLE_ADMIN';
+    public const ROLE_USER = 'ROLE_USER';
+    public const ROLE_ADMIN = 'ROLE_ADMIN';
 
     /**
      * @ORM\Column(type="integer")
@@ -35,7 +35,7 @@ class User implements UserInterface
     private $username;
 
     /**
-     * @ORM\Column(type="string", length=64)
+     * @ORM\Column(type="string", length=255)
      */
     private $password;
 
@@ -57,73 +57,46 @@ class User implements UserInterface
      */
     private $tasks;
 
-    /**
-     * User constructor.
-     */
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
     }
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return string|null
-     */
     public function getUsername(): ?string
     {
         return $this->username;
     }
 
-    /**
-     * @param string $username
-     */
-    public function setUsername($username)
+    public function setUsername(?string $username): void
     {
         $this->username = $username;
     }
 
-    /**
-     * @return string|null
-     */
     public function getPassword(): ?string
     {
         return $this->password;
     }
 
-    /**
-     * @param string $password
-     */
-    public function setPassword($password)
+    public function setPassword(?string $password): void
     {
         $this->password = $password;
     }
 
-    /**
-     * @return string|null
-     */
     public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    /**
-     * @param string $email
-     */
-    public function setEmail($email)
+    public function setEmail(?string $email): void
     {
         $this->email = $email;
     }
 
-    /**
-     * @return array|null
-     */
     public function getRoles(): ?array
     {
         return $this->roles;
@@ -132,7 +105,7 @@ class User implements UserInterface
     /**
      * @param mixed $role
      */
-    public function setRoles($role)
+    public function setRoles($role): void
     {
         if (is_array($role)) {
             $this->roles = array_replace($this->roles, $role);
@@ -142,20 +115,17 @@ class User implements UserInterface
         }
     }
 
-    /**
-     * @return bool
-     */
     public function isAdmin(): bool
     {
         return in_array(self::ROLE_ADMIN, $this->getRoles(), true);
     }
 
-    public function getSalt()
+    public function getSalt(): ?string
     {
         return null;
     }
 
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
     }
 
@@ -167,10 +137,6 @@ class User implements UserInterface
         return $this->tasks;
     }
 
-    /**
-     * @param Task $task
-     * @return User
-     */
     public function addTask(Task $task): self
     {
         if (!$this->tasks->contains($task)) {
@@ -181,10 +147,6 @@ class User implements UserInterface
         return $this;
     }
 
-    /**
-     * @param Task $task
-     * @return User
-     */
     public function removeTask(Task $task): self
     {
         if ($this->tasks->contains($task)) {
